@@ -1,0 +1,394 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.wrap { padding: 1rem 0; font-family: var(--font-sans); }
+.progress-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+.progress-track { display: flex; gap: 6px; align-items: center; }
+.prog-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--color-border-tertiary); transition: background 0.3s; cursor: pointer; }
+.prog-dot.done { background: #1D9E75; }
+.prog-dot.current { background: #7F77DD; }
+.xp-badge { font-size: 12px; padding: 4px 12px; border-radius: 99px; background: #FAEEDA; color: #633806; font-weight: 500; }
+
+.lesson-nav { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.lnav-btn { padding: 6px 14px; border-radius: 99px; font-size: 12px; border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-secondary); color: var(--color-text-secondary); cursor: pointer; transition: all 0.15s; }
+.lnav-btn.active { background: #7F77DD; color: white; border-color: #7F77DD; }
+
+.lesson-body { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+.lesson-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
+.lesson-title { font-size: 20px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 8px; }
+.lesson-intro { font-size: 14px; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 16px; }
+
+.visual-area { border-radius: var(--border-radius-md); padding: 16px; margin-bottom: 16px; min-height: 100px; }
+
+.fact-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(0,1fr)); gap: 8px; margin-bottom: 16px; }
+.fact-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; }
+.fact-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 3px; }
+.fact-val { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+
+.quiz-section { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 14px; }
+.quiz-label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 8px; }
+.quiz-q { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 10px; }
+.quiz-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.qopt { padding: 7px 16px; border-radius: 99px; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); font-size: 13px; cursor: pointer; color: var(--color-text-primary); transition: all 0.15s; }
+.qopt:hover { background: var(--color-background-secondary); }
+.qopt.correct { background: #E1F5EE; border-color: #1D9E75; color: #085041; }
+.qopt.wrong { background: #FCEBEB; border-color: #E24B4A; color: #791F1F; }
+.quiz-result { margin-top: 10px; font-size: 13px; line-height: 1.5; min-height: 18px; }
+
+.nav-row { display: flex; gap: 8px; justify-content: space-between; align-items: center; }
+.nav-btn { padding: 8px 20px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); font-size: 13px; cursor: pointer; color: var(--color-text-primary); transition: all 0.15s; }
+.nav-btn.primary { background: #7F77DD; color: white; border-color: #7F77DD; }
+.nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+.rhythm-grid { display: flex; gap: 6px; flex-wrap: wrap; }
+.beat { width: 38px; height: 38px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--color-text-secondary); transition: all 0.12s; }
+.beat.on { background: #7F77DD; color: white; border-color: #534AB7; }
+.beat.pulse { outline: 2px solid #EF9F27; outline-offset: 2px; }
+.play-row { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+.small-btn { padding: 5px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); font-size: 12px; cursor: pointer; color: var(--color-text-primary); }
+.small-btn.go { background: #1D9E75; color: white; border-color: #1D9E75; }
+
+.note-ladder { display: flex; flex-direction: column-reverse; gap: 4px; }
+.note-row { display: flex; align-items: center; gap: 10px; }
+.note-bar-wrap { flex: 1; height: 22px; background: var(--color-background-secondary); border-radius: 4px; overflow: hidden; cursor: pointer; }
+.note-bar { height: 100%; border-radius: 4px; transition: width 0.4s; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 500; }
+.note-name { font-size: 12px; color: var(--color-text-secondary); width: 32px; }
+.note-freq { font-size: 11px; color: var(--color-text-secondary); width: 54px; text-align: right; }
+
+.chord-builder { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.chord-key { width: 40px; height: 70px; border-radius: 0 0 6px 6px; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); cursor: pointer; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px; font-size: 10px; color: var(--color-text-secondary); transition: all 0.12s; }
+.chord-key.selected { background: #EEEDFE; border-color: #7F77DD; color: #3C3489; font-weight: 500; }
+.chord-key.black-k { width: 26px; height: 44px; background: #444441; color: #B4B2A9; margin: 0 -13px; z-index: 2; font-size: 9px; }
+.chord-key.black-k.selected { background: #534AB7; color: white; }
+.chord-display { font-size: 13px; color: var(--color-text-secondary); min-height: 20px; }
+.chord-name { font-weight: 500; color: var(--color-text-primary); }
+
+.mood-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.mood-btn { padding: 8px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); font-size: 13px; cursor: pointer; transition: all 0.15s; background: var(--color-background-secondary); color: var(--color-text-secondary); }
+.mood-btn.active { font-weight: 500; }
+.mood-display { margin-top: 12px; padding: 12px; border-radius: var(--border-radius-md); font-size: 13px; line-height: 1.6; color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary); min-height: 60px; }
+</style>
+
+<div class="wrap">
+<h2 class="sr-only">Interactive music theory lessons for kids covering rhythm, notes, chords, and mood in music.</h2>
+
+<div class="progress-header">
+  <div class="progress-track" id="prog-track"></div>
+  <div class="xp-badge" id="xp-badge">0 XP</div>
+</div>
+
+<div class="lesson-nav" id="lesson-nav"></div>
+
+<div class="lesson-body" id="lesson-body"></div>
+
+<div class="nav-row">
+  <button class="nav-btn" id="btn-prev" onclick="navLesson(-1)">Previous</button>
+  <span style="font-size:12px; color:var(--color-text-secondary);" id="lesson-count"></span>
+  <button class="nav-btn primary" id="btn-next" onclick="navLesson(1)">Next lesson</button>
+</div>
+
+</div>
+
+<script>
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+let actx;
+function getCtx() { if (!actx) actx = new AudioContext(); if (actx.state==='suspended') actx.resume(); return actx; }
+
+const noteFreqs = { C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392,A4:440,B4:493.88,C5:523.25,
+  'C#4':277.18,'D#4':311.13,'F#4':369.99,'G#4':415.30,'A#4':466.16 };
+
+function playFreq(freq, dur, wave) {
+  const c = getCtx(), o = c.createOscillator(), g = c.createGain();
+  o.connect(g); g.connect(c.destination);
+  o.type = wave||'triangle'; o.frequency.value = freq;
+  g.gain.setValueAtTime(0.35, c.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + (dur||0.8));
+  o.start(); o.stop(c.currentTime + (dur||0.8) + 0.05);
+}
+
+let xp = 0, currentLesson = 0;
+const answered = {};
+let beatPlaying = false, beatInterval = null, beatStep = 0;
+let rhythmBeats = [true,false,false,false, true,false,false,false, true,false,false,false, true,false,false,false];
+
+const lessons = [
+  {
+    id: 'rhythm', label: 'Rhythm', color: '#1D9E75', bg: '#E1F5EE', textColor: '#085041',
+    eyebrow: 'Lesson 1 — Rhythm',
+    title: 'The heartbeat of music',
+    intro: 'Rhythm is the pattern of beats in music. Think of it like a heartbeat — it keeps going at a steady pace. Every song has rhythm, from fast and exciting to slow and peaceful.',
+    visual: 'rhythm',
+    facts: [
+      { label: 'What is a beat?', val: 'One pulse of sound' },
+      { label: 'What is BPM?', val: 'Beats per minute' },
+      { label: 'Fast BPM feels...', val: 'Exciting, energetic' },
+      { label: 'Slow BPM feels...', val: 'Calm, peaceful' },
+    ],
+    quiz: { q: 'What does BPM stand for?', opts: ['Big Piano Music','Beats Per Minute','Bass Plus Melody','Beat Pattern Maker'], ans: 1 }
+  },
+  {
+    id: 'notes', label: 'Notes', color: '#7F77DD', bg: '#EEEDFE', textColor: '#3C3489',
+    eyebrow: 'Lesson 2 — Notes',
+    title: 'The alphabet of music',
+    intro: 'Just like language has an alphabet, music has notes! There are 7 main notes: C, D, E, F, G, A, and B. Higher notes vibrate faster, lower notes vibrate slower. Click any bar to hear the note!',
+    visual: 'notes',
+    facts: [
+      { label: 'Notes in music', val: '7 main notes' },
+      { label: 'High notes', val: 'Faster vibrations' },
+      { label: 'Low notes', val: 'Slower vibrations' },
+      { label: 'Full range', val: '12 notes total' },
+    ],
+    quiz: { q: 'How many main notes are in music?', opts: ['5','7','10','12'], ans: 1 }
+  },
+  {
+    id: 'scales', label: 'Scales', color: '#D85A30', bg: '#FAECE7', textColor: '#712B13',
+    eyebrow: 'Lesson 3 — Scales',
+    title: 'Notes that belong together',
+    intro: 'A scale is a group of notes that sound great together, like a family! The most common are Major (sounds happy) and Minor (sounds mysterious or sad). The Pentatonic scale only uses 5 notes and always sounds good!',
+    visual: 'scales',
+    facts: [
+      { label: 'Major scale', val: '7 notes, sounds happy' },
+      { label: 'Minor scale', val: '7 notes, sounds sad' },
+      { label: 'Pentatonic', val: '5 notes, always works' },
+      { label: 'Blues scale', val: '6 notes, sounds cool' },
+    ],
+    quiz: { q: 'Which scale is known for sounding "happy"?', opts: ['Minor scale','Blues scale','Major scale','Pentatonic'], ans: 2 }
+  },
+  {
+    id: 'chords', label: 'Chords', color: '#BA7517', bg: '#FAEEDA', textColor: '#633806',
+    eyebrow: 'Lesson 4 — Chords',
+    title: 'Notes playing together',
+    intro: 'A chord is when 3 or more notes play at the same time. Chords make music feel full and rich! A basic chord uses every other note — like C + E + G together make a "C major chord." Try building one!',
+    visual: 'chords',
+    facts: [
+      { label: 'Minimum notes for a chord', val: '3 notes' },
+      { label: 'Major chord feels', val: 'Bright and happy' },
+      { label: 'Minor chord feels', val: 'Dark or moody' },
+      { label: 'Chord name comes from', val: 'Its root note' },
+    ],
+    quiz: { q: 'How many notes does a basic chord need?', opts: ['1 note','2 notes','3 notes','5 notes'], ans: 2 }
+  },
+  {
+    id: 'mood', label: 'Mood', color: '#993556', bg: '#FBEAF0', textColor: '#72243E',
+    eyebrow: 'Lesson 5 — Mood in music',
+    title: 'How music makes us feel',
+    intro: 'Music can make us feel happy, sad, scared, excited, or calm. Composers choose notes, tempo, and instruments very carefully to create the feeling they want. Pick a mood below to see how it works!',
+    visual: 'mood',
+    facts: [
+      { label: 'Fast + major key', val: 'Happy, exciting' },
+      { label: 'Slow + minor key', val: 'Sad, mysterious' },
+      { label: 'Loud + fast', val: 'Intense, dramatic' },
+      { label: 'Soft + slow', val: 'Calm, peaceful' },
+    ],
+    quiz: { q: 'What usually makes music feel sad or mysterious?', opts: ['Fast tempo','Major scale','Minor scale','Lots of drums'], ans: 2 }
+  }
+];
+
+function renderLesson(idx) {
+  const l = lessons[idx];
+
+  const nav = document.getElementById('lesson-nav');
+  nav.innerHTML = '';
+  lessons.forEach((ll, i) => {
+    const b = document.createElement('div');
+    b.className = 'lnav-btn' + (i===idx?' active':'');
+    b.textContent = ll.label;
+    b.onclick = () => { currentLesson = i; renderLesson(i); };
+    nav.appendChild(b);
+  });
+
+  const pt = document.getElementById('prog-track');
+  pt.innerHTML = '';
+  lessons.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'prog-dot' + (answered[i] ? ' done' : i===idx ? ' current' : '');
+    d.onclick = () => { currentLesson = i; renderLesson(i); };
+    pt.appendChild(d);
+  });
+
+  document.getElementById('lesson-count').textContent = `${idx+1} of ${lessons.length}`;
+  document.getElementById('btn-prev').disabled = idx === 0;
+
+  const body = document.getElementById('lesson-body');
+  body.innerHTML = `
+    <div class="lesson-eyebrow" style="color:${l.color}">${l.eyebrow}</div>
+    <div class="lesson-title">${l.title}</div>
+    <div class="lesson-intro">${l.intro}</div>
+    <div class="visual-area" id="visual-area" style="background:${l.bg}"></div>
+    <div class="fact-row">${l.facts.map(f=>`<div class="fact-card"><div class="fact-label">${f.label}</div><div class="fact-val">${f.val}</div></div>`).join('')}</div>
+    <div class="quiz-section">
+      <div class="quiz-label">Quick quiz</div>
+      <div class="quiz-q">${l.quiz.q}</div>
+      <div class="quiz-opts" id="quiz-opts">${l.quiz.opts.map((o,i)=>`<div class="qopt" onclick="answer(${i},${l.quiz.ans})">${o}</div>`).join('')}</div>
+      <div class="quiz-result" id="quiz-result">${answered[idx] ? (answered[idx]==='correct' ? '🎉 Correct! You earned 10 XP.' : 'Not quite — the highlighted answer is correct. Keep going!') : ''}</div>
+    </div>`;
+
+  if (answered[idx]) {
+    setTimeout(() => {
+      const opts = document.querySelectorAll('.qopt');
+      opts.forEach((o,i) => { if(i===l.quiz.ans) o.classList.add('correct'); });
+    }, 50);
+  }
+
+  buildVisual(l.id, l.color);
+  stopBeat();
+}
+
+function buildVisual(id, color) {
+  const va = document.getElementById('visual-area');
+  if (id === 'rhythm') {
+    va.innerHTML = `<div style="font-size:12px;font-weight:500;color:${color};margin-bottom:8px;">Build your rhythm — click to toggle beats</div>
+    <div class="rhythm-grid" id="rg">${rhythmBeats.map((on,i)=>`<div class="beat${on?' on':''}" id="rb${i}" onclick="toggleBeat(${i})">${i+1}</div>`).join('')}</div>
+    <div class="play-row">
+      <div class="small-btn go" id="beat-play-btn" onclick="toggleBeat()">Play rhythm</div>
+      <div class="small-btn" onclick="resetBeats()">Reset</div>
+      <span style="font-size:12px;color:var(--color-text-secondary);margin-left:4px;">Click squares to add/remove beats</span>
+    </div>`;
+  } else if (id === 'notes') {
+    const noteList = [{n:'C4',f:261.63},{n:'D4',f:293.66},{n:'E4',f:329.63},{n:'F4',f:349.23},{n:'G4',f:392},{n:'A4',f:440},{n:'B4',f:493.88},{n:'C5',f:523.25}];
+    va.innerHTML = `<div style="font-size:12px;font-weight:500;color:${color};margin-bottom:10px;">Click any note bar to hear it</div>
+    <div class="note-ladder">${noteList.map((n,i)=>{
+      const pct = 30 + (i/(noteList.length-1))*55;
+      return `<div class="note-row"><span class="note-name">${n.n}</span>
+        <div class="note-bar-wrap" onclick="playFreq(${n.f},0.7,'triangle')">
+          <div class="note-bar" style="width:${pct}%;background:${color};opacity:${0.5+i*0.07}">
+            <span style="color:white;font-size:10px;">${Math.round(n.f)} Hz</span>
+          </div>
+        </div></div>`;
+    }).join('')}</div>`;
+  } else if (id === 'scales') {
+    const scaleInfo = [
+      {name:'C major',notes:['C','D','E','F','G','A','B'],mood:'Happy'},
+      {name:'A minor',notes:['A','B','C','D','E','F','G'],mood:'Mysterious'},
+      {name:'Pentatonic',notes:['C','D','E','G','A'],mood:'Fun & easy'},
+    ];
+    va.innerHTML = `<div style="font-size:12px;font-weight:500;color:${color};margin-bottom:10px;">Click a scale to hear it</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">${scaleInfo.map(s=>`
+      <div style="display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="playScale('${s.name}')">
+        <div style="width:80px;font-size:12px;font-weight:500;color:${color}">${s.name}</div>
+        <div style="display:flex;gap:4px;">${s.notes.map(n=>`<div style="padding:4px 8px;border-radius:4px;background:${color};color:white;font-size:11px;opacity:0.85">${n}</div>`).join('')}</div>
+        <div style="font-size:11px;color:var(--color-text-secondary)">${s.mood}</div>
+      </div>`).join('')}</div>`;
+  } else if (id === 'chords') {
+    const keys = [{n:'C',t:'white'},{n:'C#',t:'black'},{n:'D',t:'white'},{n:'D#',t:'black'},{n:'E',t:'white'},{n:'F',t:'white'},{n:'F#',t:'black'},{n:'G',t:'white'},{n:'G#',t:'black'},{n:'A',t:'white'},{n:'A#',t:'black'},{n:'B',t:'white'}];
+    va.innerHTML = `<div style="font-size:12px;font-weight:500;color:${color};margin-bottom:10px;">Click 3 or more keys to build a chord, then press Play</div>
+    <div class="chord-builder" id="chord-builder">${keys.map(k=>`<div class="chord-key${k.t==='black'?' black-k':''}" id="ck-${k.n}" onclick="toggleChordKey('${k.n}',this)">${k.n}</div>`).join('')}</div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+      <div class="small-btn go" onclick="playChord()">Play chord</div>
+      <div class="small-btn" onclick="clearChord()">Clear</div>
+    </div>
+    <div class="chord-display" id="chord-display">Select notes above</div>`;
+  } else if (id === 'mood') {
+    const moods = [
+      {name:'Happy',color:'#1D9E75',bg:'#E1F5EE',tc:'#085041',bpm:'Fast',key:'Major',instrument:'Piano',desc:'Fast tempo + major scale = bright and cheerful! Think of a fun cartoon theme song.'},
+      {name:'Sad',color:'#534AB7',bg:'#EEEDFE',tc:'#26215C',bpm:'Slow',key:'Minor',instrument:'Piano',desc:'Slow tempo + minor scale = emotional and tender. Think of a lullaby or a touching movie scene.'},
+      {name:'Scary',color:'#993C1D',bg:'#FAECE7',tc:'#4A1B0C',bpm:'Medium',key:'Minor',instrument:'Synth',desc:'Unpredictable rhythm + low minor notes = tension and dread. Think of a horror movie!'},
+      {name:'Exciting',color:'#BA7517',bg:'#FAEEDA',tc:'#412402',bpm:'Very fast',key:'Major',instrument:'Drums',desc:'Very fast tempo + strong beat = heart-pounding energy. Think of a sports highlight reel!'},
+    ];
+    va.innerHTML = `<div style="font-size:12px;font-weight:500;color:${color};margin-bottom:10px;">Pick a mood to see how composers create it</div>
+    <div class="mood-row">${moods.map(m=>`<div class="mood-btn" id="mood-${m.name}" style="border-color:${m.color}" onclick="selectMood('${m.name}')">${m.name}</div>`).join('')}</div>
+    <div class="mood-display" id="mood-display">Choose a mood above to learn how it is created in music.</div>`;
+    window._moods = moods;
+  }
+}
+
+const scaleFreqs = {
+  'C major':[261.63,293.66,329.63,349.23,392,440,493.88,523.25],
+  'A minor':[220,246.94,261.63,293.66,329.63,349.23,392,440],
+  'Pentatonic':[261.63,293.66,329.63,392,440,523.25]
+};
+function playScale(name) {
+  const freqs = scaleFreqs[name];
+  if (!freqs) return;
+  freqs.forEach((f,i) => setTimeout(() => playFreq(f,0.5), i*180));
+}
+
+let chordKeys = [];
+function toggleChordKey(n, el) {
+  const idx = chordKeys.indexOf(n);
+  if (idx > -1) { chordKeys.splice(idx,1); el.classList.remove('selected'); }
+  else { chordKeys.push(n); el.classList.add('selected'); }
+  const cd = document.getElementById('chord-display');
+  if (chordKeys.length === 0) cd.innerHTML = 'Select notes above';
+  else if (chordKeys.length < 3) cd.innerHTML = `Selected: <span class="chord-name">${chordKeys.join(' + ')}</span> — add ${3-chordKeys.length} more`;
+  else cd.innerHTML = `Chord: <span class="chord-name">${chordKeys.join(' + ')}</span> — press Play!`;
+}
+function playChord() {
+  if (chordKeys.length < 2) return;
+  const freqMap = {C:261.63,'C#':277.18,D:293.66,'D#':311.13,E:329.63,F:349.23,'F#':369.99,G:392,'G#':415.30,A:440,'A#':466.16,B:493.88};
+  chordKeys.forEach(n => playFreq(freqMap[n]||440, 1.5));
+}
+function clearChord() {
+  chordKeys = [];
+  document.querySelectorAll('.chord-key').forEach(k => k.classList.remove('selected'));
+  const cd = document.getElementById('chord-display');
+  if (cd) cd.innerHTML = 'Select notes above';
+}
+
+function selectMood(name) {
+  const moods = window._moods || [];
+  const m = moods.find(x=>x.name===name);
+  if (!m) return;
+  document.querySelectorAll('.mood-btn').forEach(b => { b.classList.remove('active'); b.style.background='var(--color-background-secondary)'; b.style.color='var(--color-text-secondary)'; });
+  const btn = document.getElementById('mood-'+name);
+  if (btn) { btn.classList.add('active'); btn.style.background=m.bg; btn.style.color=m.tc; }
+  const dd = document.getElementById('mood-display');
+  if (dd) dd.innerHTML = `<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;">
+    <span><strong style="color:${m.color}">Tempo:</strong> ${m.bpm}</span>
+    <span><strong style="color:${m.color}">Key:</strong> ${m.key}</span>
+    <span><strong style="color:${m.color}">Instrument:</strong> ${m.instrument}</span>
+  </div>${m.desc}`;
+}
+
+function toggleBeat(idx) {
+  if (typeof idx === 'number') {
+    rhythmBeats[idx] = !rhythmBeats[idx];
+    const el = document.getElementById('rb'+idx);
+    if (el) el.className = 'beat' + (rhythmBeats[idx]?' on':'');
+    return;
+  }
+  if (beatPlaying) { stopBeat(); document.getElementById('beat-play-btn').textContent = 'Play rhythm'; return; }
+  beatPlaying = true; beatStep = 0;
+  document.getElementById('beat-play-btn').textContent = 'Stop';
+  beatInterval = setInterval(() => {
+    document.querySelectorAll('.beat.pulse').forEach(b=>b.classList.remove('pulse'));
+    const el = document.getElementById('rb'+beatStep);
+    if (el) el.classList.add('pulse');
+    if (rhythmBeats[beatStep]) playFreq(200,0.1,'square');
+    beatStep = (beatStep+1) % 16;
+  }, 160);
+}
+function stopBeat() { beatPlaying=false; clearInterval(beatInterval); document.querySelectorAll('.beat.pulse').forEach(b=>b.classList.remove('pulse')); }
+function resetBeats() { rhythmBeats=[true,false,false,false,true,false,false,false,true,false,false,false,true,false,false,false]; stopBeat(); buildVisual('rhythm','#1D9E75'); }
+
+function answer(chosen, correct) {
+  if (answered[currentLesson]) return;
+  const isCorrect = chosen === correct;
+  answered[currentLesson] = isCorrect ? 'correct' : 'wrong';
+  if (isCorrect) { xp += 10; document.getElementById('xp-badge').textContent = xp + ' XP'; }
+  document.querySelectorAll('.qopt').forEach((o,i) => { if(i===correct) o.classList.add('correct'); else if(i===chosen && !isCorrect) o.classList.add('wrong'); });
+  document.getElementById('quiz-result').textContent = isCorrect ? '🎉 Correct! You earned 10 XP.' : 'Not quite — the highlighted answer is correct. Keep going!';
+  renderProgress();
+}
+
+function renderProgress() {
+  const pt = document.getElementById('prog-track');
+  pt.innerHTML = '';
+  lessons.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'prog-dot' + (answered[i] ? ' done' : i===currentLesson ? ' current' : '');
+    d.onclick = () => { currentLesson = i; renderLesson(i); };
+    pt.appendChild(d);
+  });
+}
+
+function navLesson(dir) {
+  const next = currentLesson + dir;
+  if (next < 0 || next >= lessons.length) return;
+  currentLesson = next;
+  stopBeat();
+  renderLesson(currentLesson);
+}
+
+renderLesson(0);
+</script>
