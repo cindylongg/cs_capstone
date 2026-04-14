@@ -1,0 +1,747 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #1a1a1f;
+    --bg2: #141417;
+    --bg3: #0e0e11;
+    --panel: #22222a;
+    --panel2: #2a2a35;
+    --accent: #ff6b35;
+    --accent2: #ff9f1c;
+    --green: #3ddc84;
+    --blue: #4cc9f0;
+    --purple: #7b5ea7;
+    --text: #e8e8f0;
+    --text2: #9090a8;
+    --text3: #5a5a70;
+    --border: rgba(255,255,255,0.07);
+    --tut-bg: #1e1e2e;
+    --tut-accent: #cba6f7;
+  }
+
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+  #app { display: flex; flex-direction: column; height: 100vh; min-height: 600px; }
+
+  /* TOP TOOLBAR */
+  #toolbar {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+
+  .logo { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--accent); font-weight: 700; letter-spacing: 2px; }
+
+  .transport { display: flex; align-items: center; gap: 6px; }
+  .btn-transport {
+    width: 30px; height: 30px; border-radius: 6px;
+    background: var(--panel2); border: 1px solid var(--border);
+    color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; transition: all 0.15s;
+  }
+  .btn-transport:hover { background: var(--panel); color: var(--text); }
+  .btn-transport.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .bpm-area { display: flex; align-items: center; gap: 6px; }
+  .bpm-label { font-size: 11px; color: var(--text3); font-family: 'Space Mono', monospace; }
+  .bpm-val { font-family: 'Space Mono', monospace; font-size: 18px; color: var(--accent2); font-weight: 700; }
+  input[type=range] { width: 60px; accent-color: var(--accent); }
+
+  .playhead-time { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--green); background: var(--bg3); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(61,220,132,0.2); }
+
+  .tut-toggle {
+    margin-left: auto;
+    padding: 5px 14px; border-radius: 20px;
+    background: linear-gradient(135deg, #7b5ea7, #4cc9f0);
+    border: none; color: #fff; font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tut-toggle:hover { opacity: 0.85; }
+
+  /* MAIN AREA */
+  #main { display: flex; flex: 1; overflow: hidden; }
+
+  /* SIDEBAR - instrument list */
+  #sidebar {
+    width: 160px; flex-shrink: 0;
+    background: var(--bg3);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .sidebar-header { padding: 8px 10px; font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; font-family: 'Space Mono', monospace; border-bottom: 1px solid var(--border); }
+
+  .instrument-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; cursor: pointer; border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  .instrument-row:hover { background: var(--panel2); }
+  .instrument-row.selected { background: rgba(255,107,53,0.15); border-left: 2px solid var(--accent); }
+
+  .inst-color { width: 8px; height: 24px; border-radius: 3px; flex-shrink: 0; }
+  .inst-info { flex: 1; overflow: hidden; }
+  .inst-name { font-size: 11px; color: var(--text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .inst-type { font-size: 9px; color: var(--text3); }
+
+  .inst-vol { -webkit-appearance: none; width: 36px; height: 3px; border-radius: 2px; background: var(--panel2); outline: none; }
+  .inst-vol::-webkit-slider-thumb { -webkit-appearance: none; width: 7px; height: 7px; border-radius: 50%; background: var(--text2); }
+
+  /* PATTERN EDITOR */
+  #pattern-area {
+    flex: 1; display: flex; flex-direction: column;
+    background: var(--bg2); overflow: hidden;
+  }
+
+  .pattern-header {
+    padding: 8px 12px; background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+    font-size: 11px; flex-shrink: 0;
+  }
+  .pattern-title { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text2); }
+
+  .step-count-btns { display: flex; gap: 4px; }
+  .step-btn {
+    padding: 2px 8px; border-radius: 4px; font-size: 10px;
+    background: var(--panel2); border: 1px solid var(--border);
+    color: var(--text2); cursor: pointer; font-family: 'Space Mono', monospace;
+  }
+  .step-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* THE BEAT GRID */
+  #beat-grid { flex: 1; overflow-y: auto; padding: 8px; }
+
+  .beat-row { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+
+  .beat-label {
+    width: 80px; flex-shrink: 0;
+    font-size: 10px; color: var(--text2); text-align: right;
+    padding-right: 8px; font-family: 'Space Mono', monospace;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .steps-row { display: flex; gap: 2px; flex: 1; }
+
+  .step {
+    flex: 1; height: 28px; border-radius: 4px;
+    background: var(--panel); border: 1px solid var(--border);
+    cursor: pointer; transition: all 0.08s; min-width: 14px;
+    position: relative;
+  }
+  .step:hover { background: var(--panel2); border-color: rgba(255,255,255,0.15); }
+  .step.beat-1 { border-left-color: rgba(255,255,255,0.2); }
+  .step.on { border: none; }
+  .step.playing { opacity: 0.85 !important; box-shadow: 0 0 6px currentColor; }
+  .step.cursor-step { background: rgba(255,255,255,0.05) !important; }
+
+  /* PIANO ROLL */
+  #piano-roll {
+    height: 160px; flex-shrink: 0;
+    background: var(--bg3); border-top: 1px solid var(--border);
+    display: flex; overflow: hidden;
+  }
+
+  .piano-keys { width: 48px; flex-shrink: 0; background: var(--bg3); border-right: 1px solid var(--border); overflow: hidden; }
+  .pkey { height: 14px; display: flex; align-items: center; justify-content: flex-end; padding-right: 4px; font-size: 8px; border-bottom: 1px solid var(--border); color: var(--text3); cursor: pointer; font-family: 'Space Mono', monospace; }
+  .pkey.black { background: rgba(255,255,255,0.03); color: var(--text3); }
+  .pkey.white { background: rgba(255,255,255,0.06); }
+  .pkey:hover { background: rgba(255,107,53,0.2) !important; }
+  .piano-notes-area { flex: 1; overflow-x: auto; overflow-y: hidden; position: relative; }
+  .piano-grid { position: relative; height: 100%; }
+  .piano-note {
+    position: absolute; border-radius: 3px; cursor: pointer;
+    height: 13px; min-width: 20px;
+    display: flex; align-items: center; padding-left: 4px;
+    font-size: 8px; color: rgba(255,255,255,0.7);
+    transition: opacity 0.1s;
+  }
+  .piano-note:hover { opacity: 0.8; }
+
+  /* MIXER */
+  #mixer {
+    width: 200px; flex-shrink: 0;
+    background: var(--bg3); border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+  }
+
+  .mixer-header { padding: 8px 10px; font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; font-family: 'Space Mono', monospace; border-bottom: 1px solid var(--border); }
+
+  .mixer-channels { display: flex; flex: 1; overflow-x: auto; padding: 8px 6px; gap: 4px; }
+  .mixer-ch {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    min-width: 32px; flex-shrink: 0;
+  }
+  .ch-label { font-size: 8px; color: var(--text3); font-family: 'Space Mono', monospace; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ch-fader-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 4px 0; min-height: 80px; }
+  .ch-fader { -webkit-appearance: slider-vertical; writing-mode: vertical-lr; direction: rtl; width: 20px; height: 70px; accent-color: var(--accent); }
+  .ch-meter { width: 6px; height: 70px; background: var(--panel); border-radius: 3px; overflow: hidden; position: relative; }
+  .ch-meter-fill { position: absolute; bottom: 0; width: 100%; border-radius: 3px; transition: height 0.05s; }
+  .ch-mute { width: 24px; height: 14px; border-radius: 3px; border: 1px solid var(--border); background: var(--panel2); cursor: pointer; font-size: 7px; color: var(--text3); display: flex; align-items: center; justify-content: center; }
+  .ch-mute.muted { background: rgba(255,50,50,0.3); border-color: rgba(255,50,50,0.5); color: #ff5555; }
+
+  /* TUTORIAL PANEL */
+  #tutorial-panel {
+    position: absolute; top: 0; right: 0; bottom: 0; width: 320px;
+    background: var(--tut-bg); border-left: 1px solid rgba(203,166,247,0.2);
+    display: flex; flex-direction: column; z-index: 100;
+    transform: translateX(100%); transition: transform 0.3s ease;
+    font-family: 'DM Sans', sans-serif;
+  }
+  #tutorial-panel.open { transform: translateX(0); }
+
+  .tut-header {
+    padding: 14px 16px; background: rgba(203,166,247,0.1);
+    border-bottom: 1px solid rgba(203,166,247,0.2);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .tut-title { font-size: 13px; color: var(--tut-accent); font-weight: 600; font-family: 'Space Mono', monospace; }
+  .tut-close { background: none; border: none; color: var(--text3); font-size: 18px; cursor: pointer; line-height: 1; }
+
+  .tut-progress { padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .tut-steps-dots { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+  .tut-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--panel2); border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.2s; }
+  .tut-dot.done { background: var(--green); border-color: var(--green); }
+  .tut-dot.current { background: var(--tut-accent); border-color: var(--tut-accent); box-shadow: 0 0 6px rgba(203,166,247,0.5); }
+  .progress-bar { height: 3px; background: var(--panel2); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--tut-accent), var(--blue)); border-radius: 2px; transition: width 0.4s ease; }
+
+  .tut-content { flex: 1; overflow-y: auto; padding: 16px; }
+
+  .tut-step { display: none; animation: fadeIn 0.3s ease; }
+  .tut-step.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .tut-step-num { font-size: 10px; color: var(--tut-accent); font-family: 'Space Mono', monospace; margin-bottom: 6px; }
+  .tut-step-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.3; }
+  .tut-step-body { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 14px; }
+
+  .tut-highlight {
+    background: rgba(203,166,247,0.12); border: 1px solid rgba(203,166,247,0.3);
+    border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;
+    font-size: 12px; color: var(--tut-accent); line-height: 1.6;
+  }
+  .tut-highlight strong { color: #fff; }
+
+  .tut-try {
+    background: rgba(61,220,132,0.08); border: 1px solid rgba(61,220,132,0.25);
+    border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;
+    font-size: 12px; color: var(--green); line-height: 1.6;
+  }
+
+  .tut-concept { margin-bottom: 10px; }
+  .tut-concept-tag { display: inline-block; background: rgba(76,201,240,0.15); border: 1px solid rgba(76,201,240,0.3); color: var(--blue); font-size: 10px; border-radius: 10px; padding: 2px 8px; margin-bottom: 4px; font-family: 'Space Mono', monospace; }
+  .tut-concept-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+  .tut-nav { padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 8px; }
+  .tut-btn { flex: 1; padding: 8px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .tut-btn-prev { background: var(--panel2); color: var(--text2); }
+  .tut-btn-prev:hover { background: var(--panel); color: var(--text); }
+  .tut-btn-next { background: var(--tut-accent); color: #1a1a1f; }
+  .tut-btn-next:hover { opacity: 0.9; }
+  .tut-step-counter { font-size: 11px; color: var(--text3); font-family: 'Space Mono', monospace; text-align: center; min-width: 50px; }
+
+  .audio-note { font-size: 11px; color: var(--text3); padding: 6px 10px; background: var(--panel); border-radius: 6px; border-left: 2px solid var(--text3); margin-bottom: 10px; }
+
+  .glossary-term { border-bottom: 1px dotted var(--text3); cursor: help; }
+  .kbd { display: inline-block; background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text2); }
+</style>
+
+<div id="app">
+  <h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">FL Studio-style beat maker with integrated learning tutorial</h2>
+
+  <!-- TOOLBAR -->
+  <div id="toolbar">
+    <span class="logo">BEATLAB</span>
+    <div class="transport">
+      <button class="btn-transport" id="btn-stop" title="Stop">&#9646;&#9646;</button>
+      <button class="btn-transport" id="btn-play" title="Play">&#9654;</button>
+      <button class="btn-transport" id="btn-record" title="Record" style="color:#ff6b35;">&#9679;</button>
+    </div>
+    <div class="bpm-area">
+      <span class="bpm-label">BPM</span>
+      <input type="range" id="bpm-slider" min="60" max="200" value="140" />
+      <span class="bpm-val" id="bpm-display">140</span>
+    </div>
+    <span class="playhead-time" id="playhead">1:1:000</span>
+    <button class="tut-toggle" id="tut-open-btn">&#128218; Tutorial</button>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main" style="position:relative;">
+    <!-- SIDEBAR -->
+    <div id="sidebar">
+      <div class="sidebar-header">Channels</div>
+      <div id="instrument-list"></div>
+    </div>
+
+    <!-- CENTER -->
+    <div id="pattern-area">
+      <div class="pattern-header">
+        <span class="pattern-title">Pattern 1</span>
+        <span style="font-size:10px;color:var(--text3);">Steps:</span>
+        <div class="step-count-btns">
+          <button class="step-btn active" data-steps="16">16</button>
+          <button class="step-btn" data-steps="32">32</button>
+        </div>
+        <span style="margin-left:auto;font-size:10px;color:var(--text3);">Click steps to toggle &bull; Right-click to clear row</span>
+      </div>
+      <div id="beat-grid"></div>
+      <div id="piano-roll">
+        <div class="piano-keys" id="piano-keys"></div>
+        <div class="piano-notes-area">
+          <div class="piano-grid" id="piano-grid" style="width:600px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MIXER -->
+    <div id="mixer">
+      <div class="mixer-header">Mixer</div>
+      <div class="mixer-channels" id="mixer-channels"></div>
+    </div>
+
+    <!-- TUTORIAL PANEL -->
+    <div id="tutorial-panel">
+      <div class="tut-header">
+        <span class="tut-title">&#127908; BEATLAB ACADEMY</span>
+        <button class="tut-close" id="tut-close-btn">&#10005;</button>
+      </div>
+      <div class="tut-progress">
+        <div class="tut-steps-dots" id="tut-dots"></div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      </div>
+      <div class="tut-content" id="tut-content"></div>
+      <div class="tut-nav">
+        <button class="tut-btn tut-btn-prev" id="tut-prev">&#8592; Back</button>
+        <span class="tut-step-counter" id="tut-counter">1 / 10</span>
+        <button class="tut-btn tut-btn-next" id="tut-next">Next &#8594;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const instruments = [
+  { name: 'Kick', type: 'Drum', color: '#ff6b35', freq: 60, wave: 'triangle' },
+  { name: 'Snare', type: 'Drum', color: '#ff9f1c', freq: 200, wave: 'sawtooth' },
+  { name: 'Hi-Hat', type: 'Drum', color: '#ffd166', freq: 800, wave: 'square' },
+  { name: 'Open HH', type: 'Drum', color: '#e0c057', freq: 600, wave: 'square' },
+  { name: 'Clap', type: 'Drum', color: '#06d6a0', freq: 300, wave: 'square' },
+  { name: 'Bass', type: 'Synth', color: '#4cc9f0', freq: 55, wave: 'sawtooth' },
+  { name: 'Lead', type: 'Synth', color: '#7b5ea7', freq: 440, wave: 'triangle' },
+  { name: 'Pad', type: 'Synth', color: '#a8dadc', freq: 220, wave: 'sine' },
+];
+
+let steps = 16;
+let currentStep = 0;
+let playing = false;
+let bpm = 140;
+let intervalId = null;
+let selectedInst = 0;
+let volumes = instruments.map(() => 0.7);
+let mutes = instruments.map(() => false);
+let pattern = instruments.map(() => Array(32).fill(false));
+let audioCtx = null;
+let tutOpen = false;
+let tutStep = 0;
+
+const tutSteps = [
+  {
+    title: 'Welcome to BeatLab',
+    body: 'BeatLab is a browser-based Digital Audio Workstation (DAW) inspired by FL Studio. Here you can create beats, melodies, and full tracks.',
+    highlights: [{ label: 'What is a DAW?', text: 'A <strong>Digital Audio Workstation</strong> is software used to record, edit, produce, and arrange music. FL Studio, Ableton, and Logic are popular examples.' }],
+    tries: [],
+    concepts: [{ tag: 'DAW', text: 'Software for creating and producing music digitally' }]
+  },
+  {
+    title: 'The Beat Sequencer',
+    body: 'The large grid in the center is the Step Sequencer — the heart of BeatLab. Each row represents an instrument. Each square is a beat step.',
+    highlights: [{ label: 'Step Sequencer', text: 'A grid of buttons where each column = one time slot (step). When a step is ON, that instrument plays at that moment in the loop.' }],
+    tries: ['Click any square in the Kick row to turn it ON (it lights up orange)', 'Click it again to turn it OFF'],
+    concepts: [{ tag: 'Step', text: 'One rhythmic slot in the sequence. 16 steps = one bar at 4/4 time.' }]
+  },
+  {
+    title: 'Building a Basic Beat',
+    body: 'Most hip-hop and EDM tracks use the "Four on the Floor" pattern — kick drum on every beat. In 16 steps, that means steps 1, 5, 9, and 13.',
+    highlights: [{ label: 'Four on the Floor', text: 'A fundamental drum pattern: <strong>kick on beats 1, 2, 3, 4</strong> of each bar. In 16 steps, that is steps 1, 5, 9, and 13.' }],
+    tries: ['In the Kick row, click steps 1, 5, 9, and 13', 'Then press Play ▶ to hear the loop'],
+    concepts: [{ tag: 'Bar', text: 'A musical unit of time. In 4/4 time, one bar = 4 beats = 16 sixteenth-notes.' }]
+  },
+  {
+    title: 'Adding Snare & Hi-Hat',
+    body: 'The snare typically hits on beats 2 and 4 (steps 5 and 13 in a 16-step pattern). Hi-hats fill in the spaces between beats.',
+    highlights: [{ label: 'Backbeat', text: 'The snare on beats 2 and 4 creates the <strong>backbeat</strong> — that satisfying "crack" that drives most popular music.' }],
+    tries: ['Add snare on steps 5 and 13', 'Add hi-hat on every even step (2, 4, 6, 8...)', 'Press Play and listen to the groove'],
+    concepts: [{ tag: 'Groove', text: 'The rhythmic feel created by the timing and relationship between drum hits.' }]
+  },
+  {
+    title: 'BPM — Controlling Tempo',
+    body: 'BPM stands for Beats Per Minute. It controls how fast your music plays. Drag the BPM slider in the toolbar to change speed.',
+    highlights: [{ label: 'Common BPM ranges', text: '<strong>60-80</strong> = slow ballad &bull; <strong>90-110</strong> = hip-hop &bull; <strong>120-140</strong> = house/techno &bull; <strong>140-180</strong> = drum & bass' }],
+    tries: ['Try setting BPM to 90 for a hip-hop feel', 'Try 128 for a house music feel', 'Listen to how the same pattern sounds different at different speeds'],
+    concepts: [{ tag: 'Tempo', text: 'The speed of music, measured in BPM (Beats Per Minute).' }]
+  },
+  {
+    title: 'The Channel Rack',
+    body: 'The left panel shows all your instruments (channels). Click an instrument name to select it and see its volume slider. Each instrument has a color for easy identification.',
+    highlights: [{ label: 'Channels', text: 'Each instrument occupies its own <strong>channel</strong>. You can have many channels — drums, bass, leads, pads, effects.' }],
+    tries: ['Click different instruments in the left sidebar to select them', 'Drag the small volume slider next to each instrument'],
+    concepts: [{ tag: 'Channel', text: 'An individual track for one instrument or sound source.' }]
+  },
+  {
+    title: 'The Mixer',
+    body: 'The right panel is the Mixer. Each channel strip has a volume fader and a level meter. The M button mutes that channel.',
+    highlights: [{ label: 'Mixing', text: 'Mixing is the process of <strong>balancing all your instruments</strong> so each can be heard clearly. A good mix is the difference between amateur and professional sound.' }],
+    tries: ['Click the M button on a channel to mute/unmute it', 'Drag a fader to change a channel\'s volume', 'Try muting the kick to hear the rest of the beat'],
+    concepts: [{ tag: 'Fader', text: 'A volume control that slides up and down.' }, { tag: 'Mute', text: 'Silence a channel without deleting it.' }]
+  },
+  {
+    title: 'Piano Roll Basics',
+    body: 'The Piano Roll at the bottom lets you program melodies and chords for synth instruments. The horizontal axis is time, vertical is pitch.',
+    highlights: [{ label: 'Piano Roll', text: 'A grid where you place <strong>notes</strong> at specific pitches and times. The piano keyboard on the left shows which notes are which. Higher = higher pitch.' }],
+    tries: ['The colorful blocks in the piano roll are notes', 'Click on the piano keys on the left to hear each pitch', 'Select Bass or Lead in the channel list to see different notes'],
+    concepts: [{ tag: 'Pitch', text: 'How high or low a note sounds. A = 440Hz is the standard tuning reference.' }, { tag: 'Note', text: 'A single musical tone with a pitch and duration.' }]
+  },
+  {
+    title: 'Patterns & Arrangement',
+    body: 'A "pattern" is one loop of your beat (usually 1-2 bars). In a full song, you arrange different patterns in a timeline — intro, verse, chorus, etc.',
+    highlights: [{ label: 'Song structure', text: 'A typical pop song: <strong>Intro → Verse → Pre-chorus → Chorus → Verse → Chorus → Bridge → Outro</strong>. Each section might use a different pattern.' }],
+    tries: ['Try switching between 16 and 32 steps using the buttons at the top', '32 steps gives you 2 bars of music'],
+    concepts: [{ tag: 'Loop', text: 'A section of music that repeats seamlessly.' }, { tag: 'Arrangement', text: 'How patterns are ordered in time to create a full song.' }]
+  },
+  {
+    title: 'Music Theory: Basics',
+    body: 'Great beats follow music theory principles. Notes that sound good together are "in key." A key is a set of notes that form a musical scale.',
+    highlights: [{ label: 'The C Major Scale', text: 'The most common scale: <strong>C D E F G A B C</strong>. All these notes sound good together. Most beginners start here — no sharps or flats.' }],
+    tries: ['Notice how the notes in the piano roll use different colors for each instrument', 'Try to listen for how the bass note relates to the kick drum — they often hit together', 'A good bass note for a C chord is C, E, or G'],
+    concepts: [{ tag: 'Scale', text: 'A set of notes ordered by pitch that form the basis of a key.' }, { tag: 'Chord', text: 'Three or more notes played simultaneously.' }, { tag: 'Key', text: 'The tonal center of a piece of music.' }]
+  }
+];
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playNote(inst, vol = 0.7) {
+  if (mutes[inst]) return;
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = instruments[inst].wave;
+    let freq = instruments[inst].freq;
+    if (inst === 0) { osc.frequency.setValueAtTime(freq * 2, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(freq * 0.5, ctx.currentTime + 0.08); }
+    else osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(vol * volumes[inst], ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (inst < 5 ? 0.12 : 0.4));
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.5);
+  } catch(e) {}
+}
+
+function buildGrid() {
+  const grid = document.getElementById('beat-grid');
+  grid.innerHTML = '';
+  instruments.forEach((inst, i) => {
+    const row = document.createElement('div');
+    row.className = 'beat-row';
+    const lbl = document.createElement('div');
+    lbl.className = 'beat-label';
+    lbl.textContent = inst.name;
+    row.appendChild(lbl);
+    const stepsRow = document.createElement('div');
+    stepsRow.className = 'steps-row';
+    for (let s = 0; s < steps; s++) {
+      const step = document.createElement('div');
+      step.className = 'step' + (s % 4 === 0 ? ' beat-1' : '');
+      if (pattern[i][s]) {
+        step.style.background = inst.color;
+        step.style.opacity = '0.9';
+        step.classList.add('on');
+      }
+      step.addEventListener('click', () => {
+        pattern[i][s] = !pattern[i][s];
+        if (pattern[i][s]) {
+          step.style.background = inst.color;
+          step.style.opacity = '0.9';
+          step.classList.add('on');
+          playNote(i);
+        } else {
+          step.style.background = '';
+          step.style.opacity = '';
+          step.classList.remove('on');
+        }
+      });
+      step.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        for (let ss = 0; ss < steps; ss++) { pattern[i][ss] = false; }
+        buildGrid();
+      });
+      stepsRow.appendChild(step);
+    }
+    row.appendChild(stepsRow);
+    grid.appendChild(row);
+  });
+}
+
+function highlightCurrentStep() {
+  const rows = document.querySelectorAll('.beat-row');
+  rows.forEach((row, i) => {
+    const stepEls = row.querySelectorAll('.step');
+    stepEls.forEach((el, s) => {
+      el.classList.remove('cursor-step');
+      if (s === currentStep) el.classList.add('cursor-step');
+    });
+  });
+}
+
+function tick() {
+  instruments.forEach((_, i) => {
+    if (pattern[i][currentStep]) playNote(i);
+  });
+  updateMeters();
+  highlightCurrentStep();
+  const bar = Math.floor(currentStep / 16) + 1;
+  const beat = Math.floor((currentStep % 16) / 4) + 1;
+  const sub = (currentStep % 4) + 1;
+  document.getElementById('playhead').textContent = `${bar}:${beat}:${String(sub * 250).padStart(3,'0')}`;
+  currentStep = (currentStep + 1) % steps;
+}
+
+function updateMeters() {
+  const fills = document.querySelectorAll('.ch-meter-fill');
+  fills.forEach((fill, i) => {
+    const active = pattern[i] && pattern[i][currentStep];
+    const h = active ? Math.random() * 50 + 20 : Math.max(0, parseFloat(fill.style.height || '0') - 8);
+    fill.style.height = h + '%';
+    fill.style.background = h > 70 ? '#ff6b35' : h > 40 ? '#ffd166' : '#3ddc84';
+  });
+}
+
+function buildSidebar() {
+  const list = document.getElementById('instrument-list');
+  list.innerHTML = '';
+  instruments.forEach((inst, i) => {
+    const row = document.createElement('div');
+    row.className = 'instrument-row' + (i === selectedInst ? ' selected' : '');
+    row.innerHTML = `
+      <div class="inst-color" style="background:${inst.color}"></div>
+      <div class="inst-info">
+        <div class="inst-name">${inst.name}</div>
+        <div class="inst-type">${inst.type}</div>
+      </div>
+      <input class="inst-vol" type="range" min="0" max="1" step="0.05" value="${volumes[i]}" />
+    `;
+    row.querySelector('.inst-vol').addEventListener('input', (e) => {
+      volumes[i] = parseFloat(e.target.value);
+      const fills = document.querySelectorAll('.ch-fader');
+      if (fills[i]) fills[i].value = volumes[i];
+    });
+    row.addEventListener('click', (e) => {
+      if (e.target.className === 'inst-vol') return;
+      selectedInst = i;
+      buildSidebar();
+      playNote(i);
+      buildPianoRoll(i);
+    });
+    list.appendChild(row);
+  });
+}
+
+function buildMixer() {
+  const ch = document.getElementById('mixer-channels');
+  ch.innerHTML = '';
+  instruments.forEach((inst, i) => {
+    const strip = document.createElement('div');
+    strip.className = 'mixer-ch';
+    strip.innerHTML = `
+      <div class="ch-label" title="${inst.name}">${inst.name.slice(0,3)}</div>
+      <div class="ch-fader-wrap">
+        <input class="ch-fader" type="range" orient="vertical" min="0" max="1" step="0.05" value="${volumes[i]}" />
+      </div>
+      <div class="ch-meter"><div class="ch-meter-fill" style="height:0%"></div></div>
+      <button class="ch-mute ${mutes[i] ? 'muted' : ''}">${mutes[i] ? 'M' : 'M'}</button>
+    `;
+    const fader = strip.querySelector('.ch-fader');
+    fader.style.writingMode = 'vertical-lr';
+    fader.style.webkitAppearance = 'slider-vertical';
+    fader.addEventListener('input', (e) => {
+      volumes[i] = parseFloat(e.target.value);
+      const instVols = document.querySelectorAll('.inst-vol');
+      if (instVols[i]) instVols[i].value = volumes[i];
+    });
+    strip.querySelector('.ch-mute').addEventListener('click', () => {
+      mutes[i] = !mutes[i];
+      buildMixer();
+    });
+    ch.appendChild(strip);
+  });
+}
+
+const NOTE_NAMES = ['C5','B4','Bb4','A4','Ab4','G4','Gb4','F4','E4','Eb4','D4','Db4','C4','B3','Bb3','A3','Ab3','G3','Gb3','F3','E3','Eb3','D3','Db3','C3'];
+const BLACK_NOTES = ['Bb4','Ab4','Gb4','Eb4','Db4','Bb3','Ab3','Gb3','Eb3','Db3'];
+
+function buildPianoKeys() {
+  const keys = document.getElementById('piano-keys');
+  keys.innerHTML = '';
+  NOTE_NAMES.forEach(note => {
+    const k = document.createElement('div');
+    const isBlack = BLACK_NOTES.includes(note);
+    k.className = 'pkey ' + (isBlack ? 'black' : 'white');
+    k.textContent = note.includes('C') ? note : '';
+    keys.appendChild(k);
+  });
+}
+
+const instNotes = [
+  [],
+  [],
+  [],
+  [],
+  [],
+  [[0,20,'C3','#4cc9f0'],[60,40,'G3','#4cc9f0'],[120,30,'F3','#4cc9f0'],[200,50,'C3','#4cc9f0']],
+  [[0,30,'E4','#7b5ea7'],[40,20,'G4','#7b5ea7'],[80,40,'A4','#7b5ea7'],[140,20,'G4','#7b5ea7'],[180,40,'E4','#7b5ea7']],
+  [[0,120,'C3','#a8dadc'],[0,120,'E3','#a8dadc'],[0,120,'G3','#a8dadc']],
+];
+
+function buildPianoRoll(instIdx) {
+  const grid = document.getElementById('piano-grid');
+  grid.innerHTML = '';
+  const notes = instNotes[instIdx] || [];
+  const rowH = 14;
+  grid.style.height = (NOTE_NAMES.length * rowH) + 'px';
+  NOTE_NAMES.forEach((note, i) => {
+    const line = document.createElement('div');
+    line.style.cssText = `position:absolute;left:0;right:0;top:${i*rowH}px;height:${rowH}px;border-bottom:1px solid rgba(255,255,255,0.03);${BLACK_NOTES.includes(note)?'background:rgba(255,255,255,0.02)':''}`;
+    grid.appendChild(line);
+  });
+  notes.forEach(([x, w, noteName, color]) => {
+    const noteIdx = NOTE_NAMES.indexOf(noteName);
+    if (noteIdx < 0) return;
+    const el = document.createElement('div');
+    el.className = 'piano-note';
+    el.style.cssText = `left:${x}px;width:${w}px;top:${noteIdx*rowH+1}px;background:${color};`;
+    el.textContent = noteName;
+    grid.appendChild(el);
+  });
+}
+
+function buildTutorial() {
+  const dotsEl = document.getElementById('tut-dots');
+  dotsEl.innerHTML = '';
+  tutSteps.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'tut-dot';
+    dot.addEventListener('click', () => { tutStep = i; renderTutStep(); });
+    dotsEl.appendChild(dot);
+  });
+  renderTutStep();
+}
+
+function renderTutStep() {
+  const s = tutSteps[tutStep];
+  const content = document.getElementById('tut-content');
+  content.innerHTML = `
+    <div class="tut-step active">
+      <div class="tut-step-num">LESSON ${tutStep+1} OF ${tutSteps.length}</div>
+      <div class="tut-step-title">${s.title}</div>
+      <div class="tut-step-body">${s.body}</div>
+      ${s.highlights.map(h => `<div class="tut-highlight"><strong>${h.label}</strong><br>${h.text}</div>`).join('')}
+      ${s.tries.length ? `<div class="tut-try">&#9654; <strong>Try it:</strong><br>${s.tries.map(t => '&bull; ' + t).join('<br>')}</div>` : ''}
+      ${s.concepts.map(c => `<div class="tut-concept"><span class="tut-concept-tag">${c.tag}</span><div class="tut-concept-text">${c.text}</div></div>`).join('')}
+    </div>
+  `;
+  document.getElementById('tut-counter').textContent = `${tutStep+1} / ${tutSteps.length}`;
+  const pct = ((tutStep) / (tutSteps.length - 1)) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  const dots = document.querySelectorAll('.tut-dot');
+  dots.forEach((d, i) => {
+    d.classList.remove('current', 'done');
+    if (i < tutStep) d.classList.add('done');
+    else if (i === tutStep) d.classList.add('current');
+  });
+  document.getElementById('tut-prev').disabled = tutStep === 0;
+  document.getElementById('tut-prev').style.opacity = tutStep === 0 ? '0.4' : '1';
+}
+
+// INIT
+buildSidebar();
+buildMixer();
+buildGrid();
+buildPianoKeys();
+buildPianoRoll(5);
+buildTutorial();
+
+// Pre-load a simple kick pattern
+pattern[0][0] = true; pattern[0][4] = true; pattern[0][8] = true; pattern[0][12] = true;
+pattern[1][4] = true; pattern[1][12] = true;
+pattern[2][2] = true; pattern[2][6] = true; pattern[2][10] = true; pattern[2][14] = true;
+buildGrid();
+
+// TRANSPORT
+document.getElementById('btn-play').addEventListener('click', () => {
+  if (playing) return;
+  playing = true;
+  document.getElementById('btn-play').classList.add('active');
+  const ms = (60 / bpm / 4) * 1000;
+  intervalId = setInterval(tick, ms);
+});
+
+document.getElementById('btn-stop').addEventListener('click', () => {
+  playing = false;
+  document.getElementById('btn-play').classList.remove('active');
+  clearInterval(intervalId);
+  currentStep = 0;
+  document.querySelectorAll('.cursor-step').forEach(el => el.classList.remove('cursor-step'));
+  document.getElementById('playhead').textContent = '1:1:000';
+});
+
+document.getElementById('bpm-slider').addEventListener('input', (e) => {
+  bpm = parseInt(e.target.value);
+  document.getElementById('bpm-display').textContent = bpm;
+  if (playing) {
+    clearInterval(intervalId);
+    const ms = (60 / bpm / 4) * 1000;
+    intervalId = setInterval(tick, ms);
+  }
+});
+
+document.querySelectorAll('.step-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    steps = parseInt(btn.dataset.steps);
+    currentStep = 0;
+    buildGrid();
+  });
+});
+
+// TUTORIAL
+document.getElementById('tut-open-btn').addEventListener('click', () => {
+  tutOpen = true;
+  document.getElementById('tutorial-panel').classList.add('open');
+});
+document.getElementById('tut-close-btn').addEventListener('click', () => {
+  tutOpen = false;
+  document.getElementById('tutorial-panel').classList.remove('open');
+});
+document.getElementById('tut-next').addEventListener('click', () => {
+  if (tutStep < tutSteps.length - 1) { tutStep++; renderTutStep(); }
+});
+document.getElementById('tut-prev').addEventListener('click', () => {
+  if (tutStep > 0) { tutStep--; renderTutStep(); }
+});
+</script>
