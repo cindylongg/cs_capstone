@@ -1,0 +1,734 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--color-background-tertiary)}
+input,button,select{font-family:var(--font-sans)}
+.page{display:none}.page.on{display:block}
+.app-shell{display:none}.app-shell.on{display:flex;min-height:780px}
+
+.auth-bg{min-height:600px;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--color-background-tertiary)}
+.auth-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:14px;padding:30px;width:100%;max-width:400px}
+.brand{display:flex;align-items:center;gap:9px;justify-content:center;margin-bottom:22px}
+.brand-mark{width:34px;height:34px;background:#7F77DD;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.brand-mark svg{width:18px;height:18px;fill:white}
+.brand-name{font-size:16px;font-weight:500;color:var(--color-text-primary)}
+.auth-h{font-size:19px;font-weight:500;color:var(--color-text-primary);text-align:center;margin-bottom:3px}
+.auth-s{font-size:13px;color:var(--color-text-secondary);text-align:center;margin-bottom:20px}
+.fld{margin-bottom:13px}
+.fld label{display:block;font-size:11px;font-weight:500;color:var(--color-text-secondary);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em}
+.fld input{width:100%;padding:9px 11px;border-radius:7px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);font-size:13px;color:var(--color-text-primary);outline:none;transition:border-color 0.15s}
+.fld input:focus{border-color:#7F77DD;box-shadow:0 0 0 3px #EEEDFE}
+.fld input.err{border-color:#E24B4A}
+.ferr{font-size:11px;color:#A32D2D;margin-top:3px;min-height:13px}
+.pw-w{position:relative}
+.pw-w input{padding-right:44px}
+.pw-tog{position:absolute;right:9px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:11px;padding:2px 4px}
+.str-bar{height:3px;background:var(--color-background-secondary);border-radius:2px;margin-top:4px;overflow:hidden}
+.str-fill{height:100%;border-radius:2px;transition:width 0.3s,background 0.3s;width:0}
+.str-lbl{font-size:10px;margin-top:2px;min-height:13px}
+.abtn{width:100%;padding:10px;border-radius:7px;background:#7F77DD;color:white;border:none;font-size:13px;font-weight:500;cursor:pointer;margin-top:3px;transition:opacity 0.15s}
+.abtn:hover{opacity:0.87}
+.abtn:disabled{opacity:0.4;cursor:default}
+.gerr{background:#FCEBEB;border:0.5px solid #F09595;border-radius:7px;padding:9px 11px;font-size:12px;color:#791F1F;margin-bottom:12px}
+.gok{background:#E1F5EE;border:0.5px solid #5DCAA5;border-radius:7px;padding:9px 11px;font-size:12px;color:#085041;margin-bottom:12px}
+.sw{text-align:center;font-size:12px;color:var(--color-text-secondary);margin-top:14px}
+.sw a{color:#7F77DD;cursor:pointer;font-weight:500}
+.av-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:3px}
+.av-opt{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;background:var(--color-background-secondary)}
+.av-opt.sel{border-color:#7F77DD}
+
+.sidebar{width:220px;background:var(--color-background-primary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;flex-shrink:0}
+.sb-hdr{padding:12px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.sb-logo{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.sb-lmark{width:24px;height:24px;background:#7F77DD;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-lmark svg{width:13px;height:13px;fill:white}
+.sb-user{display:flex;align-items:center;gap:7px;margin-top:9px}
+.sb-av{width:30px;height:30px;border-radius:50%;background:#EEEDFE;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.sb-uinfo{flex:1;min-width:0}
+.sb-uname{font-size:12px;font-weight:500;color:var(--color-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-ulv{font-size:10px;color:var(--color-text-secondary)}
+.xpbar{height:3px;background:var(--color-background-secondary);border-radius:2px;margin-top:2px;overflow:hidden}
+.xpfill{height:100%;background:#7F77DD;border-radius:2px;transition:width 0.4s}
+.sb-nav{flex:1;overflow-y:auto;padding:5px 0}
+.sb-sec{padding:7px 10px 2px;font-size:10px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;color:var(--color-text-secondary)}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 9px;margin:1px 5px;border-radius:7px;cursor:pointer;transition:background 0.12s}
+.sb-item:hover{background:var(--color-background-secondary)}
+.sb-item.act{background:#EEEDFE}
+.sb-item.act .sb-ilbl{color:#3C3489;font-weight:500}
+.sb-iico{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.sb-ilbl{font-size:12px;color:var(--color-text-primary);flex:1}
+.sb-done{font-size:9px;padding:1px 5px;border-radius:99px;background:#E1F5EE;color:#085041}
+.sb-streak{margin:6px;padding:8px 10px;background:#FAEEDA;border-radius:8px;display:flex;align-items:center;gap:7px}
+.sb-snum{font-size:17px;font-weight:500;color:#633806}
+.sb-slbl{font-size:10px;color:#633806;line-height:1.3}
+.sb-signout{margin:4px 7px 8px;padding:6px;border-radius:6px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);font-size:11px;cursor:pointer;color:var(--color-text-secondary);text-align:center;transition:background 0.12s;width:calc(100% - 14px)}
+.sb-signout:hover{background:#FCEBEB;color:#A32D2D;border-color:#F09595}
+
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);padding:9px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.bc{font-size:12px;color:var(--color-text-secondary)}
+.bc b{color:var(--color-text-primary);font-weight:500}
+.tb-pills{display:flex;gap:7px}
+.pill{font-size:11px;color:var(--color-text-secondary);padding:3px 8px;border-radius:99px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary)}
+.pill b{color:var(--color-text-primary);font-weight:500}
+.content{flex:1;padding:18px;overflow-y:auto;background:var(--color-background-tertiary)}
+.view{display:none}.view.on{display:block}
+
+.pg-h{font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.pg-s{font-size:12px;color:var(--color-text-secondary);margin-bottom:16px}
+.mcard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-bottom:16px}
+.mcard{background:var(--color-background-secondary);border-radius:8px;padding:11px 13px}
+.mcard-l{font-size:10px;color:var(--color-text-secondary);margin-bottom:2px}
+.mcard-v{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.mcard-s{font-size:10px;color:var(--color-text-secondary);margin-top:1px}
+.sec-h{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:9px}
+.cc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:9px;margin-bottom:16px}
+.cc{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:13px;cursor:pointer;transition:border-color 0.15s}
+.cc:hover{border-color:#7F77DD}
+.cc-ico{font-size:20px;margin-bottom:5px}
+.cc-t{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+.cc-d{font-size:11px;color:var(--color-text-secondary);line-height:1.5;margin-bottom:7px}
+.cc-pb{height:3px;background:var(--color-background-secondary);border-radius:2px;overflow:hidden;margin-bottom:4px}
+.cc-pf{height:100%;border-radius:2px}
+.cc-m{display:flex;justify-content:space-between;font-size:10px;color:var(--color-text-secondary)}
+.cc-lock{opacity:0.4;pointer-events:none}
+.panel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:13px;margin-bottom:12px}
+.panel-h{font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:9px}
+.act-r{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.act-r:last-child{border-bottom:none}
+.act-ico{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.act-t{font-size:12px;font-weight:500;color:var(--color-text-primary)}
+.act-d{font-size:10px;color:var(--color-text-secondary)}
+.act-xp{font-size:10px;font-weight:500;color:#633806;background:#FAEEDA;padding:2px 6px;border-radius:99px;flex-shrink:0}
+
+.lesson-layout{display:grid;grid-template-columns:1fr 240px;gap:12px;align-items:start}
+.lcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:16px}
+.l-eye{font-size:10px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:4px}
+.l-h{font-size:16px;font-weight:500;color:var(--color-text-primary);margin-bottom:9px}
+.l-body{font-size:13px;color:var(--color-text-secondary);line-height:1.8;margin-bottom:12px}
+.l-body p{margin-bottom:7px}
+.izone{border-radius:8px;padding:13px;margin-bottom:12px}
+.steps{display:flex;gap:4px;margin-bottom:12px;align-items:center}
+.sdot{width:24px;height:24px;border-radius:50%;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:var(--color-text-secondary);cursor:pointer;transition:all 0.15s;flex-shrink:0}
+.sdot.cur{background:#7F77DD;color:white;border-color:#7F77DD}
+.sdot.dn{background:#1D9E75;color:white;border-color:#1D9E75}
+.sline{flex:1;height:1px;background:var(--color-border-tertiary)}
+.qcard{background:var(--color-background-secondary);border-radius:8px;padding:12px;margin-bottom:9px}
+.qnum{font-size:10px;color:var(--color-text-secondary);margin-bottom:4px}
+.qq{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:9px;line-height:1.5}
+.qopts{display:flex;flex-direction:column;gap:4px}
+.qo{padding:8px 11px;border-radius:6px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);font-size:12px;cursor:pointer;color:var(--color-text-primary);transition:all 0.15s;text-align:left;font-family:var(--font-sans);width:100%}
+.qo:hover:not([disabled]){background:var(--color-background-secondary)}
+.qo.c{background:#E1F5EE;border-color:#1D9E75;color:#085041}
+.qo.w{background:#FCEBEB;border-color:#E24B4A;color:#791F1F}
+.qfb{margin-top:5px;font-size:11px;color:var(--color-text-secondary);min-height:15px}
+.done-banner{background:#E1F5EE;border:0.5px solid #5DCAA5;border-radius:8px;padding:14px;text-align:center;margin-top:9px}
+.done-h{font-size:15px;font-weight:500;color:#085041;margin-bottom:3px}
+.done-s{font-size:11px;color:#085041;opacity:0.8;margin-bottom:9px}
+.btn-r{display:flex;gap:6px;margin-top:9px;align-items:center}
+.btn{padding:6px 14px;border-radius:6px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);font-size:12px;cursor:pointer;color:var(--color-text-primary);transition:all 0.15s;font-family:var(--font-sans)}
+.btn:hover{background:var(--color-background-tertiary)}
+.btn.pri{background:#7F77DD;color:white;border-color:#7F77DD}
+.btn.suc{background:#1D9E75;color:white;border-color:#1D9E75}
+.btn:disabled{opacity:0.35;cursor:default}
+.sb-lesson{display:flex;flex-direction:column;gap:8px}
+.cl-i{display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px;color:var(--color-text-secondary)}
+.cl-i.dn{opacity:0.45;text-decoration:line-through}
+.cl-c{width:13px;height:13px;border-radius:50%;border:0.5px solid var(--color-border-secondary);flex-shrink:0}
+.cl-c.dn{background:#1D9E75;border-color:#1D9E75;display:flex;align-items:center;justify-content:center}
+.cl-c.dn::after{content:'';display:block;width:4px;height:3px;border-left:1.5px solid white;border-bottom:1.5px solid white;transform:rotate(-45deg) translate(1px,-1px)}
+
+.pk-strip{display:flex;gap:2px;margin-bottom:7px;overflow-x:auto}
+.pk{height:56px;border-radius:0 0 4px 4px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-size:9px;color:var(--color-text-secondary);transition:background 0.08s;flex-shrink:0}
+.pk.w{width:28px}
+.pk.b{width:17px;height:35px;background:#2C2C2A;color:#888780;margin:0 -8px;z-index:2;border-radius:0 0 3px 3px}
+.pk.w:active,.pk.w.lit{background:#EEEDFE;border-color:#7F77DD}
+.pk.b:active,.pk.b.lit{background:#7F77DD}
+.rb-grid{display:flex;gap:3px;flex-wrap:wrap}
+.rb{width:28px;height:28px;border-radius:5px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);cursor:pointer;transition:all 0.1s;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--color-text-secondary);flex-shrink:0}
+.rb.on{background:#7F77DD;color:white;border-color:#3C3489}
+.rb.acc{background:#1D9E75;color:white;border-color:#085041}
+.rb.pl{outline:2px solid #EF9F27;outline-offset:1px}
+.ear-o{padding:8px 11px;border-radius:6px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);font-size:12px;cursor:pointer;color:var(--color-text-primary);transition:all 0.15s;margin-bottom:4px;display:flex;align-items:center;gap:6px;font-family:var(--font-sans);width:100%;text-align:left}
+.ear-o:hover{background:var(--color-background-secondary)}
+.ear-o.c{background:#E1F5EE;border-color:#1D9E75;color:#085041}
+.ear-o.w{background:#FCEBEB;border-color:#E24B4A;color:#791F1F}
+.play-ic{width:18px;height:18px;border-radius:50%;background:#7F77DD;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.play-ic::after{content:'';border-left:5px solid white;border-top:4px solid transparent;border-bottom:4px solid transparent;margin-left:2px}
+.pbw{height:4px;background:var(--color-background-secondary);border-radius:2px;overflow:hidden;margin:3px 0 9px}
+.pbf{height:100%;border-radius:2px;transition:width 0.3s}
+.badge-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.badge-c{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:9px;padding:11px;text-align:center}
+.badge-ico{font-size:24px;margin-bottom:4px}
+.badge-n{font-size:11px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+.badge-d{font-size:10px;color:var(--color-text-secondary);line-height:1.3}
+.badge-tag{font-size:9px;padding:2px 6px;border-radius:99px;margin-top:4px;display:inline-block}
+</style>
+
+<div id="pg-signin" class="page on">
+<div class="auth-bg">
+<div class="auth-card">
+  <div class="brand"><div class="brand-mark"><svg viewBox="0 0 18 18"><rect x="2" y="2" width="3" height="14" rx="1.5"/><rect x="7.5" y="5" width="3" height="11" rx="1.5"/><rect x="13" y="1" width="3" height="15" rx="1.5"/></svg></div><span class="brand-name">BeatBuddy Academy</span></div>
+  <div class="auth-h">Welcome back!</div>
+  <div class="auth-s">Sign in to continue your music journey</div>
+  <div id="si-gerr" class="gerr" style="display:none"></div>
+  <div class="fld"><label>Email</label><input type="email" id="si-email" placeholder="you@example.com"><div class="ferr" id="si-eem"></div></div>
+  <div class="fld"><label>Password</label><div class="pw-w"><input type="password" id="si-pw" placeholder="Your password"><button class="pw-tog" onclick="togglePw('si-pw',this)">Show</button></div><div class="ferr" id="si-pem"></div></div>
+  <button class="abtn" id="si-btn" onclick="doSignIn()">Sign in</button>
+  <div class="sw">No account? <a onclick="showPage('pg-signup')">Create one — it's free</a></div>
+</div></div></div>
+
+<div id="pg-signup" class="page">
+<div class="auth-bg">
+<div class="auth-card">
+  <div class="brand"><div class="brand-mark"><svg viewBox="0 0 18 18"><rect x="2" y="2" width="3" height="14" rx="1.5"/><rect x="7.5" y="5" width="3" height="11" rx="1.5"/><rect x="13" y="1" width="3" height="15" rx="1.5"/></svg></div><span class="brand-name">BeatBuddy Academy</span></div>
+  <div class="auth-h">Create your account</div>
+  <div class="auth-s">Join thousands of kids learning music!</div>
+  <div id="su-gerr" class="gerr" style="display:none"></div>
+  <div class="fld"><label>Your name</label><input type="text" id="su-name" placeholder="e.g. Jamie"><div class="ferr" id="su-nem"></div></div>
+  <div class="fld"><label>Email</label><input type="email" id="su-email" placeholder="you@example.com"><div class="ferr" id="su-eem"></div></div>
+  <div class="fld"><label>Password</label><div class="pw-w"><input type="password" id="su-pw" placeholder="At least 6 characters" oninput="pwStrength(this.value)"><button class="pw-tog" onclick="togglePw('su-pw',this)">Show</button></div><div class="str-bar"><div class="str-fill" id="str-fill"></div></div><div class="str-lbl" id="str-lbl"></div><div class="ferr" id="su-pem"></div></div>
+  <div class="fld"><label>Confirm password</label><div class="pw-w"><input type="password" id="su-pw2" placeholder="Repeat password"><button class="pw-tog" onclick="togglePw('su-pw2',this)">Show</button></div><div class="ferr" id="su-p2em"></div></div>
+  <div class="fld"><label>Pick an avatar</label><div class="av-row" id="av-row"></div></div>
+  <button class="abtn" id="su-btn" onclick="doSignUp()">Create account</button>
+  <div class="sw">Already have an account? <a onclick="showPage('pg-signin')">Sign in</a></div>
+</div></div></div>
+
+<div id="pg-app" class="app-shell">
+  <div class="sidebar">
+    <div class="sb-hdr">
+      <div class="sb-logo"><div class="sb-lmark"><svg viewBox="0 0 18 18"><rect x="2" y="2" width="3" height="14" rx="1.5"/><rect x="7.5" y="5" width="3" height="11" rx="1.5"/><rect x="13" y="1" width="3" height="15" rx="1.5"/></svg></div>BeatBuddy Academy</div>
+      <div class="sb-user"><div class="sb-av" id="sb-av"></div><div class="sb-uinfo"><div class="sb-uname" id="sb-name"></div><div class="sb-ulv" id="sb-lv"></div><div class="xpbar"><div class="xpfill" id="xp-bar"></div></div></div></div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-sec">Main</div>
+      <div class="sb-item act" id="nav-home" onclick="goView('home',this)"><div class="sb-iico" style="background:#EEEDFE">🏠</div><span class="sb-ilbl">Home</span></div>
+      <div class="sb-item" id="nav-courses" onclick="goView('courses',this)"><div class="sb-iico" style="background:#E1F5EE">📚</div><span class="sb-ilbl">Courses</span></div>
+      <div class="sb-item" id="nav-practice" onclick="goView('practice',this)"><div class="sb-iico" style="background:#FAEEDA">🎹</div><span class="sb-ilbl">Practice</span></div>
+      <div class="sb-item" id="nav-ear" onclick="goView('ear',this)"><div class="sb-iico" style="background:#FBEAF0">👂</div><span class="sb-ilbl">Ear training</span></div>
+      <div class="sb-sec">Progress</div>
+      <div class="sb-item" id="nav-stats" onclick="goView('stats',this)"><div class="sb-iico" style="background:#E6F1FB">📈</div><span class="sb-ilbl">My stats</span></div>
+      <div class="sb-item" id="nav-badges" onclick="goView('badges',this)"><div class="sb-iico" style="background:#FAEEDA">🏆</div><span class="sb-ilbl">Badges</span></div>
+      <div class="sb-sec">Lessons</div>
+      <div id="unit-nav"></div>
+    </div>
+    <div class="sb-streak"><div class="sb-snum" id="sb-streak">0</div><div><div class="sb-slbl" style="font-weight:500">Day streak</div><div class="sb-slbl">Keep it up!</div></div></div>
+    <button class="sb-signout" onclick="doSignOut()">Sign out</button>
+  </div>
+  <div class="main">
+    <div class="topbar"><div class="bc" id="app-bc"><b>Home</b></div><div class="tb-pills"><div class="pill">XP <b id="tb-xp">0</b></div><div class="pill">❤️ <b id="tb-hearts">5</b></div><div class="pill">🔥 <b id="tb-streak">0</b></div></div></div>
+    <div class="content">
+      <div class="view on" id="view-home"></div>
+      <div class="view" id="view-courses"></div>
+      <div class="view" id="view-lesson"></div>
+      <div class="view" id="view-practice"></div>
+      <div class="view" id="view-ear"></div>
+      <div class="view" id="view-stats"></div>
+      <div class="view" id="view-badges"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const AC=window.AudioContext||window.webkitAudioContext;let actx;
+function getAC(){if(!actx)actx=new AC();if(actx.state==='suspended')actx.resume();return actx;}
+function tone(f,d,t){const c=getAC(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type=t||'triangle';o.frequency.value=f;g.gain.setValueAtTime(0.28,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+(d||0.6));o.start();o.stop(c.currentTime+(d||0.6)+0.05);}
+
+const AVATARS=['🎵','🎸','🥁','🎹','🎺','🎻','🪗','🎤'];
+const LVS=[{m:0,t:'Beginner'},{m:100,t:'Note Finder'},{m:250,t:'Rhythm Keeper'},{m:500,t:'Melody Maker'},{m:800,t:'Harmony Hero'},{m:1200,t:'Music Master'}];
+function getLv(xp){let l=0;LVS.forEach((v,i)=>{if(xp>=v.m)l=i;});return l;}
+function getLvT(xp){return LVS[getLv(xp)].t;}
+function getLvPct(xp){const i=getLv(xp),c=LVS[i].m,n=LVS[i+1]?LVS[i+1].m:c+500;return Math.round((xp-c)/(n-c)*100);}
+
+let DB={};
+function loadDB(){try{DB=JSON.parse(localStorage.getItem('bba2_db')||'{}');}catch(e){DB={};}}
+function saveDB(){try{localStorage.setItem('bba2_db',JSON.stringify(DB));}catch(e){}}
+function getUser(e){return DB[e.toLowerCase()]||null;}
+function saveUser(e,d){DB[e.toLowerCase()]=d;saveDB();}
+
+let CU=null;
+function loadSession(){try{const s=JSON.parse(localStorage.getItem('bba2_sess')||'null');if(s&&DB[s.email]){CU=DB[s.email];return true;}return false;}catch(e){return false;}}
+function saveSess(){try{if(CU)localStorage.setItem('bba2_sess',JSON.stringify({email:CU.email}));else localStorage.removeItem('bba2_sess');}catch(e){}}
+
+function showPage(id){
+  document.querySelectorAll('.page,.app-shell').forEach(el=>{el.classList.remove('on');if(el.id===id){el.classList.add('on');}});
+}
+
+function togglePw(id,btn){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'Show':'Hide';}
+
+function pwStrength(pw){
+  const f=document.getElementById('str-fill'),l=document.getElementById('str-lbl');if(!f)return;
+  let s=0;if(pw.length>=6)s++;if(pw.length>=10)s++;if(/[A-Z]/.test(pw))s++;if(/[0-9]/.test(pw))s++;if(/[^A-Za-z0-9]/.test(pw))s++;
+  const w=Math.round(s/5*100),cols=['','#E24B4A','#EF9F27','#EF9F27','#1D9E75','#1D9E75'],labs=['','Weak','Fair','Fair','Strong','Very strong'];
+  f.style.width=w+'%';f.style.background=cols[s]||'';l.textContent=pw.length?labs[s]||'Strong':'';l.style.color=cols[s]||'';
+}
+
+function setFerr(id,msg){const el=document.getElementById(id);if(el)el.textContent=msg;}
+function setGerr(id,msg){const el=document.getElementById(id);if(el){el.textContent=msg;el.style.display=msg?'block':'none';}}
+
+function doSignIn(){
+  setGerr('si-gerr','');setFerr('si-eem','');setFerr('si-pem','');
+  const email=(document.getElementById('si-email').value||'').trim();
+  const pw=document.getElementById('si-pw').value||'';
+  if(!email){setFerr('si-eem','Email is required');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setFerr('si-eem','Enter a valid email');return;}
+  if(!pw){setFerr('si-pem','Password is required');return;}
+  const user=getUser(email);
+  if(!user){setGerr('si-gerr','No account found with that email.');return;}
+  if(user.pw!==btoa(pw)){setFerr('si-pem','Incorrect password');return;}
+  CU=user;saveSess();launchApp();
+}
+
+function doSignUp(){
+  setGerr('su-gerr','');['su-nem','su-eem','su-pem','su-p2em'].forEach(id=>setFerr(id,''));
+  const name=(document.getElementById('su-name').value||'').trim();
+  const email=(document.getElementById('su-email').value||'').trim();
+  const pw=document.getElementById('su-pw').value||'';
+  const pw2=document.getElementById('su-pw2').value||'';
+  const av=document.querySelector('.av-opt.sel')?.dataset.av||AVATARS[0];
+  let ok=true;
+  if(!name){setFerr('su-nem','Name is required');ok=false;}
+  if(!email){setFerr('su-eem','Email is required');ok=false;}
+  else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setFerr('su-eem','Enter a valid email');ok=false;}
+  else if(getUser(email)){setFerr('su-eem','An account with this email already exists');ok=false;}
+  if(!pw){setFerr('su-pem','Password is required');ok=false;}
+  else if(pw.length<6){setFerr('su-pem','At least 6 characters');ok=false;}
+  if(pw!==pw2){setFerr('su-p2em','Passwords do not match');ok=false;}
+  if(!ok)return;
+  const btn=document.getElementById('su-btn');btn.disabled=true;btn.textContent='Creating...';
+  setTimeout(()=>{
+    const u={email:email.toLowerCase(),name,pw:btoa(pw),avatar:av,xp:0,streak:0,hearts:5,lessonsDone:{},quizCorrect:0,quizTotal:0,joinDate:new Date().toLocaleDateString(),lastDay:''};
+    saveUser(email,u);CU=u;saveSess();btn.disabled=false;btn.textContent='Create account';launchApp();
+  },600);
+}
+
+function doSignOut(){
+  stopRhythm();CU=null;saveSess();
+  document.getElementById('si-email').value='';document.getElementById('si-pw').value='';
+  setGerr('si-gerr','');setFerr('si-eem','');setFerr('si-pem','');
+  showPage('pg-signin');
+}
+
+const COURSES=[
+  {id:'rhythm',title:'Rhythm & beat',icon:'🥁',color:'#1D9E75',bg:'#E1F5EE',desc:'Beats, tempo, note lengths, and rests.',lessons:['r1','r2','r3'],unlocked:true},
+  {id:'notes',title:'Notes & pitch',icon:'🎵',color:'#7F77DD',bg:'#EEEDFE',desc:'The musical alphabet and pitch.',lessons:['n1','n2'],unlocked:true},
+  {id:'scales',title:'Scales & keys',icon:'🎼',color:'#D85A30',bg:'#FAECE7',desc:'Scales, moods, major and minor.',lessons:['s1','s2'],unlocked:false},
+  {id:'chords',title:'Chords & harmony',icon:'🎹',color:'#BA7517',bg:'#FAEEDA',desc:'Build chords and hear harmony.',lessons:['c1','c2'],unlocked:false},
+];
+
+const NF={C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392,A4:440,B4:493.88,C5:523.25,'C#4':277.18,'D#4':311.13,'F#4':369.99,'G#4':415.3,'A#4':466.16,D5:587.33,'D#5':622.25,E5:659.25};
+
+const LESSONS={
+  r1:{title:'What is a beat?',course:'rhythm',steps:[
+    {type:'read',text:'<p>A <b>beat</b> is the basic pulse of music — like a heartbeat. When you tap your foot to a song, you feel the beat!</p><p>Beats are grouped into <b>measures</b>. In 4/4 time there are 4 beats per measure. Beat 1 is always the strongest — try clicking the beats below!</p>',vis:'metronome'},
+    {type:'quiz',qs:[{q:'What is a beat in music?',o:['A loud sound','The basic pulse','A type of note','A piano key'],a:1},{q:'How many beats in 4/4 time?',o:['2','3','4','8'],a:2},{q:'Which beat is usually strongest?',o:['Beat 2','Beat 4','Beat 3','Beat 1'],a:3}]}
+  ]},
+  r2:{title:'Tempo: fast & slow',course:'rhythm',steps:[
+    {type:'read',text:'<p><b>Tempo</b> is how fast or slow the beats are, measured in <b>BPM</b> (beats per minute). 60 BPM means one beat per second.</p><p>Fast tempos feel exciting and energetic. Slow ones feel calm and peaceful. Click a tempo below to hear it!</p>',vis:'tempo'},
+    {type:'quiz',qs:[{q:'What does BPM stand for?',o:['Big Piano Music','Beats Per Minute','Bass Plus Melody','Beat Pulse Mode'],a:1},{q:'A slow, calm song would have...',o:['180+ BPM','60-80 BPM','120 BPM','No tempo'],a:1}]}
+  ]},
+  r3:{title:'Note lengths',course:'rhythm',steps:[
+    {type:'read',text:'<p>Notes have different lengths. A <b>whole note</b> lasts 4 beats, a <b>half note</b> 2 beats, a <b>quarter note</b> 1 beat, and an <b>eighth note</b> half a beat. Click to hear each!</p>',vis:'note_lengths'},
+    {type:'quiz',qs:[{q:'How long is a quarter note?',o:['4 beats','2 beats','1 beat','Half a beat'],a:2},{q:'A whole note lasts...',o:['1 beat','2 beats','4 beats','8 beats'],a:2}]}
+  ]},
+  n1:{title:'The musical alphabet',course:'notes',steps:[
+    {type:'read',text:'<p>Music uses 7 letters: <b>A B C D E F G</b>. After G it starts over at A! Each letter is a different <b>pitch</b> — how high or low the note sounds. Click the notes to hear them!</p>',vis:'alphabet'},
+    {type:'quiz',qs:[{q:'How many letters are in the musical alphabet?',o:['5','6','7','12'],a:2},{q:'What letter comes after G?',o:['H','A again','Z','B'],a:1}]}
+  ]},
+  n2:{title:'High & low sounds',course:'notes',steps:[
+    {type:'read',text:'<p>Sound is made by <b>vibrations</b>. Fast vibrations make high sounds; slow vibrations make low sounds. We measure this in <b>Hz</b>. The note A4 vibrates at exactly 440 Hz!</p>',vis:'pitch_ladder'},
+    {type:'quiz',qs:[{q:'What makes a high-pitched note?',o:['Slow vibrations','Fast vibrations','Loud volume','Long notes'],a:1},{q:'A4 vibrates at...',o:['220 Hz','330 Hz','440 Hz','880 Hz'],a:2}]}
+  ]},
+  s1:{title:'What is a scale?',course:'scales',steps:[
+    {type:'read',text:'<p>A <b>scale</b> is a set of notes that belong together. The C major scale is C D E F G A B C — all the white keys! Scales give music its "flavor."</p>',vis:'scale'},
+    {type:'quiz',qs:[{q:'A scale is a set of...',o:['Drums','Notes that belong together','Chords','Lyrics'],a:1}]}
+  ]},
+  s2:{title:'Major vs minor',course:'scales',steps:[
+    {type:'read',text:'<p><b>Major</b> scales sound bright and happy. <b>Minor</b> scales sound darker or more mysterious. Click both to hear the difference!</p>',vis:'major_minor'},
+    {type:'quiz',qs:[{q:'Which scale sounds "happy"?',o:['Minor','Blues','Major','Chromatic'],a:2}]}
+  ]},
+  c1:{title:'What is a chord?',course:'chords',steps:[
+    {type:'read',text:'<p>A <b>chord</b> is 3 or more notes played at the same time. The C major chord uses C + E + G played together. Chords make music feel full and rich!</p>',vis:'chord'},
+    {type:'quiz',qs:[{q:'Minimum notes for a chord?',o:['1','2','3','5'],a:2}]}
+  ]},
+  c2:{title:'Major & minor chords',course:'chords',steps:[
+    {type:'read',text:'<p>Major chords sound bright; minor chords sound moody. Change just one note in a C major chord (E → E♭) and it becomes C minor!</p>',vis:'chord2'},
+    {type:'quiz',qs:[{q:'A minor chord sounds...',o:['Happy','Bright','Moody or sad','Exciting'],a:2}]}
+  ]},
+};
+
+const BADGES=[
+  {id:'first',icon:'⭐',name:'First steps',desc:'Complete your first lesson',check:u=>Object.keys(u.lessonsDone||{}).length>=1},
+  {id:'rhythm',icon:'🥁',name:'Rhythm keeper',desc:'Finish all rhythm lessons',check:u=>['r1','r2','r3'].every(l=>(u.lessonsDone||{})[l])},
+  {id:'notes',icon:'🎵',name:'Note spotter',desc:'Finish all notes lessons',check:u=>['n1','n2'].every(l=>(u.lessonsDone||{})[l])},
+  {id:'streak3',icon:'🔥',name:'On fire',desc:'3-day streak',check:u=>(u.streak||0)>=3},
+  {id:'quiz5',icon:'🧠',name:'Quiz whiz',desc:'Answer 5 questions correctly',check:u=>(u.quizCorrect||0)>=5},
+  {id:'xp100',icon:'💫',name:'100 XP club',desc:'Earn 100 XP',check:u=>(u.xp||0)>=100},
+  {id:'xp500',icon:'🌟',name:'500 XP legend',desc:'Earn 500 XP',check:u=>(u.xp||0)>=500},
+  {id:'explorer',icon:'🗺️',name:'Explorer',desc:'Try lessons from every course',check:u=>COURSES.every(c=>c.lessons.some(l=>(u.lessonsDone||{})[l]))},
+];
+
+function cDone(cid){return(COURSES.find(c=>c.id===cid)?.lessons||[]).filter(l=>(CU.lessonsDone||{})[l]).length;}
+function cPct(cid){const c=COURSES.find(x=>x.id===cid);if(!c)return 0;return Math.round(cDone(cid)/c.lessons.length*100);}
+function totalDone(){let n=0;COURSES.forEach(c=>c.lessons.forEach(l=>{if((CU.lessonsDone||{})[l])n++;}));return n;}
+function totalLessons(){return Object.keys(LESSONS).length;}
+
+function addXP(amt){CU.xp=(CU.xp||0)+amt;saveUser(CU.email,CU);updateHeader();}
+
+function updateHeader(){
+  if(!CU)return;
+  document.getElementById('sb-av').textContent=CU.avatar||'🎵';
+  document.getElementById('sb-name').textContent=CU.name;
+  document.getElementById('sb-lv').textContent='Lv'+(getLv(CU.xp)+1)+' — '+getLvT(CU.xp);
+  document.getElementById('xp-bar').style.width=getLvPct(CU.xp)+'%';
+  document.getElementById('tb-xp').textContent=CU.xp;
+  document.getElementById('tb-hearts').textContent=CU.hearts||5;
+  document.getElementById('tb-streak').textContent=CU.streak||0;
+  document.getElementById('sb-streak').textContent=CU.streak||0;
+}
+
+function buildUnitNav(){
+  const el=document.getElementById('unit-nav');el.innerHTML='';
+  const cur=COURSES.find(c=>c.unlocked&&cPct(c.id)<100)||COURSES.find(c=>c.unlocked)||COURSES[0];
+  if(!cur)return;
+  cur.lessons.forEach(lid=>{
+    const l=LESSONS[lid];if(!l)return;
+    const done=(CU.lessonsDone||{})[lid];
+    const item=document.createElement('div');item.className='sb-item';
+    item.innerHTML=`<div class="cl-c${done?' dn':''}"></div><span class="sb-ilbl" style="font-size:11px">${l.title}</span>${done?'<span class="sb-done">Done</span>':''}`;
+    item.onclick=()=>openLesson(lid);
+    el.appendChild(item);
+  });
+}
+
+function goView(id,el){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('act'));
+  const vEl=document.getElementById('view-'+id);if(vEl)vEl.classList.add('on');
+  if(el)el.classList.add('act');
+  else{const n=document.getElementById('nav-'+id);if(n)n.classList.add('act');}
+  const titles={home:'Home',courses:'Courses',lesson:LS.lid?LESSONS[LS.lid]?.title||'Lesson':'Lesson',practice:'Practice',ear:'Ear training',stats:'My stats',badges:'Badges'};
+  document.getElementById('app-bc').innerHTML=`<b>${titles[id]||id}</b>`;
+  if(id==='home')renderHome();
+  else if(id==='courses')renderCourses();
+  else if(id==='practice')renderPractice();
+  else if(id==='ear')renderEar();
+  else if(id==='stats')renderStats();
+  else if(id==='badges')renderBadges();
+}
+
+function launchApp(){
+  if(!CU)return;
+  const today=new Date().toDateString();
+  if(CU.lastDay!==today){
+    const yday=new Date(Date.now()-86400000).toDateString();
+    CU.streak=CU.lastDay===yday?(CU.streak||0)+1:1;
+    CU.lastDay=today;saveUser(CU.email,CU);
+  }
+  showPage('pg-app');
+  updateHeader();
+  buildUnitNav();
+  goView('home');
+}
+
+function renderHome(){
+  const h=document.getElementById('view-home');
+  const hr=new Date().getHours();
+  const gr=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+  const nextLessons=Object.keys(LESSONS).filter(lid=>!(CU.lessonsDone||{})[lid]).slice(0,3);
+  h.innerHTML=`<div class="pg-h">${gr}, ${CU.name}! 👋</div>
+  <div class="pg-s">Member since ${CU.joinDate||'today'}${(CU.streak||0)>1?' · '+CU.streak+'-day streak':''}</div>
+  <div class="mcard-grid">
+    <div class="mcard"><div class="mcard-l">Total XP</div><div class="mcard-v">${CU.xp}</div><div class="mcard-s">Level ${getLv(CU.xp)+1}</div></div>
+    <div class="mcard"><div class="mcard-l">Lessons done</div><div class="mcard-v">${totalDone()}</div><div class="mcard-s">of ${totalLessons()}</div></div>
+    <div class="mcard"><div class="mcard-l">Day streak</div><div class="mcard-v">${CU.streak||0}</div><div class="mcard-s">days in a row</div></div>
+    <div class="mcard"><div class="mcard-l">Badges</div><div class="mcard-v">${BADGES.filter(b=>b.check(CU)).length}</div><div class="mcard-s">of ${BADGES.length}</div></div>
+  </div>
+  <div class="sec-h">Continue learning</div>
+  <div class="cc-grid">${COURSES.filter(c=>c.unlocked).map(c=>`<div class="cc" onclick="openCourse('${c.id}')">
+    <div class="cc-ico">${c.icon}</div><div class="cc-t">${c.title}</div><div class="cc-d">${c.desc}</div>
+    <div class="cc-pb"><div class="cc-pf" style="width:${cPct(c.id)}%;background:${c.color}"></div></div>
+    <div class="cc-m"><span>${cDone(c.id)}/${c.lessons.length} lessons</span><span style="color:${c.color};font-weight:500">${cPct(c.id)}%</span></div>
+  </div>`).join('')}</div>
+  ${nextLessons.length?`<div class="sec-h">Up next</div><div class="panel">${nextLessons.map(lid=>{const l=LESSONS[lid];const c=COURSES.find(x=>x.id===l.course);return`<div class="act-r"><div class="act-ico" style="background:${c.bg};font-size:12px">${c.icon}</div><div style="flex:1"><div class="act-t">${l.title}</div><div class="act-d">${c.title}</div></div><button class="btn pri" onclick="openLesson('${lid}')">Start →</button></div>`;}).join('')}</div>`:'<div class="panel" style="text-align:center;padding:20px"><div style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px">All lessons complete!</div><div style="font-size:12px;color:var(--color-text-secondary)">Amazing work. Check your badges and stats.</div></div>'}`;
+}
+
+function renderCourses(){
+  document.getElementById('view-courses').innerHTML=`<div class="pg-h">Courses</div><div class="pg-s">Complete in order to unlock new ones.</div>
+  <div class="cc-grid">${COURSES.map(c=>`<div class="cc${c.unlocked?'':' cc-lock'}" ${c.unlocked?`onclick="openCourse('${c.id}')"`:''}">
+    <div class="cc-ico">${c.icon}${!c.unlocked?' 🔒':''}</div><div class="cc-t">${c.title}</div><div class="cc-d">${c.desc}</div>
+    <div class="cc-pb"><div class="cc-pf" style="width:${cPct(c.id)}%;background:${c.color}"></div></div>
+    <div class="cc-m"><span>${cDone(c.id)}/${c.lessons.length} lessons</span><span>${c.unlocked?cPct(c.id)+'%':'Locked'}</span></div>
+  </div>`).join('')}</div>`;
+}
+
+function openCourse(cid){
+  const c=COURSES.find(x=>x.id===cid);
+  const next=c.lessons.find(l=>!(CU.lessonsDone||{})[l])||c.lessons[0];
+  openLesson(next);
+}
+
+const LS={lid:null,step:0,qa:{}};
+function openLesson(lid){
+  if(!LESSONS[lid])return;
+  LS.lid=lid;LS.step=0;LS.qa={};
+  stopRhythm();
+  document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('act'));
+  goView('lesson');
+  renderLesson();
+}
+
+function renderLesson(){
+  const lid=LS.lid,lesson=LESSONS[lid],step=lesson.steps[LS.step];
+  const c=COURSES.find(x=>x.id===lesson.course);
+  const dots=lesson.steps.map((_,i)=>`<div class="sdot${i<LS.step?' dn':i===LS.step?' cur':''}" onclick="goStep(${i})">${i+1}</div>${i<lesson.steps.length-1?'<div class="sline"></div>':''}`).join('');
+  const cl=lesson.steps.map((s,i)=>`<div class="cl-i${i<LS.step?' dn':''}"><div class="cl-c${i<LS.step?' dn':''}"></div>${s.type==='read'?'Read & explore':'Knowledge quiz'}</div>`).join('');
+
+  let mainHTML='';
+  if(step.type==='read'){
+    mainHTML=`<div class="lcard">
+      <div class="steps">${dots}</div>
+      <div class="l-eye" style="color:${c.color}">${c.title}</div>
+      <div class="l-h">${lesson.title}</div>
+      <div class="l-body">${step.text}</div>
+      ${buildVis(step.vis,c.color,c.bg)}
+      <div class="btn-r">
+        <button class="btn" onclick="goStep(${LS.step-1})" ${LS.step===0?'disabled':''}>Back</button>
+        <button class="btn pri" onclick="goStep(${LS.step+1})">Continue →</button>
+      </div>
+    </div>`;
+  } else {
+    const allAns=step.qs.every((_,i)=>LS.qa[i]!==undefined);
+    const correct=step.qs.filter((_,i)=>LS.qa[i]===true).length;
+    mainHTML=`<div class="lcard">
+      <div class="steps">${dots}</div>
+      <div class="l-eye" style="color:${c.color}">Knowledge check</div>
+      <div class="l-h">Quiz: ${lesson.title}</div>
+      <div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:12px">Answer all questions to complete this lesson</div>
+      ${step.qs.map((q,qi)=>{const ans=LS.qa[qi];return`<div class="qcard">
+        <div class="qnum">Question ${qi+1} of ${step.qs.length}</div>
+        <div class="qq">${q.q}</div>
+        <div class="qopts">${q.o.map((o,oi)=>`<button class="qo${ans!==undefined?(oi===q.a?' c':(oi===ans?' w':'')):''}${ans!==undefined?' disabled':''}" onclick="ansQ(${qi},${oi},${q.a})" ${ans!==undefined?'disabled':''}>${o}</button>`).join('')}</div>
+        <div class="qfb">${ans===undefined?'':(ans===q.a?'Correct! +10 XP':'Not quite — see the highlighted answer.')}</div>
+      </div>`;}).join('')}
+      ${allAns?`<div class="done-banner"><div class="done-h">Quiz done! ${correct}/${step.qs.length} correct</div><div class="done-s">You earned ${correct*10} XP from this quiz</div><div class="btn-r" style="justify-content:center"><button class="btn suc" onclick="completeLesson()">Finish lesson +20 XP</button></div></div>`:''}
+    </div>`;
+  }
+
+  document.getElementById('view-lesson').innerHTML=`<div class="lesson-layout">
+    <div>${mainHTML}</div>
+    <div class="sb-lesson">
+      <div class="panel"><div class="panel-h">Lesson steps</div>${cl}</div>
+      <div class="panel"><div class="panel-h">Your XP</div>
+        <div style="font-size:20px;font-weight:500;color:var(--color-text-primary)">${CU.xp}</div>
+        <div style="font-size:10px;color:var(--color-text-secondary)">Level ${getLv(CU.xp)+1} — ${getLvT(CU.xp)}</div>
+        <div class="xpbar" style="margin-top:5px"><div class="xpfill" style="width:${getLvPct(CU.xp)}%"></div></div>
+      </div>
+      <div class="panel"><div class="panel-h">Tip</div><div style="font-size:11px;color:var(--color-text-secondary);line-height:1.6">${{rhythm:'Tap your foot to feel the beat!',notes:'Sing do-re-mi to remember scales!',scales:'Hum a major scale — it feels "complete."',chords:'Three-note chords are called triads!'}[c.id]||'Keep going!'}</div></div>
+    </div>
+  </div>`;
+}
+
+function goStep(i){
+  const l=LESSONS[LS.lid];if(i<0||i>=l.steps.length)return;
+  LS.step=i;LS.qa={};renderLesson();
+}
+
+function ansQ(qi,chosen,correct){
+  if(LS.qa[qi]!==undefined)return;
+  const ok=chosen===correct;LS.qa[qi]=ok;
+  if(ok){addXP(10);CU.quizCorrect=(CU.quizCorrect||0)+1;}
+  CU.quizTotal=(CU.quizTotal||0)+1;saveUser(CU.email,CU);
+  renderLesson();
+}
+
+function completeLesson(){
+  if(!CU.lessonsDone)CU.lessonsDone={};
+  CU.lessonsDone[LS.lid]=true;
+  addXP(20);saveUser(CU.email,CU);buildUnitNav();
+  const c=COURSES.find(x=>x.id===LESSONS[LS.lid].course);
+  if(c){const nx=c.lessons.find(l=>!CU.lessonsDone[l]);if(nx){openLesson(nx);return;}}
+  goView('courses');
+}
+
+function buildVis(type,color,bg){
+  if(!type)return '';
+  if(type==='metronome')return`<div class="izone" style="background:${bg}"><div style="font-size:11px;font-weight:500;color:${color};margin-bottom:7px">Click any beat to feel it!</div>
+    <div style="display:flex;gap:6px;margin-bottom:8px">${[1,2,3,4].map(i=>`<div style="width:46px;height:46px;border-radius:8px;background:${i===1?color+'33':bg};border:0.5px solid ${color};display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:${color};cursor:pointer" onclick="tone(${i===1?880:660},0.1,'square')">${i}</div>`).join('')}</div>
+    <button class="btn pri" onclick="playMetro()">Play metronome</button></div>`;
+  if(type==='tempo')return`<div class="izone" style="background:${bg}"><div style="font-size:11px;font-weight:500;color:${color};margin-bottom:7px">Hear different tempos</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap">${[{l:'Slow (60)',v:60},{l:'Medium (100)',v:100},{l:'Fast (140)',v:140},{l:'Very fast (180)',v:180}].map(t=>`<button class="btn" onclick="playTempo(${t.v})">${t.l} BPM</button>`).join('')}</div></div>`;
+  if(type==='note_lengths')return`<div class="izone" style="background:${bg}"><div style="font-size:11px;font-weight:500;color:${color};margin-bottom:7px">Click to hear each length</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap">${[{l:'Whole (4 beats)',d:2},{l:'Half (2 beats)',d:1.2},{l:'Quarter (1)',d:0.6},{l:'Eighth (½)',d:0.3}].map(n=>`<button class="btn" onclick="tone(392,${n.d})">${n.l}</button>`).join('')}</div></div>`;
+  if(type==='alphabet')return`<div class="izone" style="background:${bg}"><div style="font-size:11px;font-weight:500;color:${color};margin-bottom:7px">Click each note!</div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap">${[['C4',261.63],['D4',293.66],['E4',329.63],['F4',349.23],['G4',392],['A4',440],['B4',493.88],['C5',523.25]].map(([n,f])=>`<button class="btn" style="border-color:${color}" onclick="tone(${f},0.5)">${n.replace(/\d/,'')}</button>`).join('')}</div></div>`;
+  if(type==='pitch_ladder')return`<div class="izone" style="background:${bg}"><div style="font-size:11px;font-weight:500;color:${color};margin-bottom:7px">Higher bars = higher notes. Click to hear!</div>
+    <div style="display:flex;flex-direction:column-reverse;gap:3px">${[['C4',261.63],['E4',329.63],['A4',440],['C5',523.25]].map(([n,f],i)=>`<div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;color:var(--color-text-secondary);width:22px">${n}</span><div style="flex:1;height:18px;background:var(--color-background-secondary);border-radius:3px;cursor:pointer;overflow:hidden" onclick="tone(${f},0.6)"><div style="height:100%;width:${28+(i+1)*16}%;background:${color};opacity:${0.5+i*0.15};display:flex;align-items:center;padding-left:6px"><span style="font-size:9px;color:white;font-weight:500">${Math.round(f)} Hz</span></div></div></div>`).join('')}</div></div>`;
+  if(type==='scale')return`<div class="izone" style="background:${bg}"><div style="font-size:11px;font-weight:500;color:${color};margin-bottom:7px">Hear the C major scale</div>
+    <button class="btn pri" onclick="[261.63,293.66,329.63,349.23,392,440,493.88,523.25].forEach((f,i)=>setTimeout(()=>tone(f,0.4),i*200))">Play C major scale</button></div>`;
+  if(type==='major_minor')return`<div class="izone" style="background:${bg}"><div style="font-size:11px;font-weight:500;color:${color};margin-bottom:7px">Hear the difference!</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <button class="btn pri" onclick="[261.63,293.66,329.63,349.23,392,440,493.88,523.25].forEach((f,i)=>setTimeout(()=>tone(f,0.4),i*200))">C major (happy)</button>
+      <button class="btn" onclick="[220,246.94,261.63,293.66,329.63,349.23,392,440].forEach((f,i)=>setTimeout(()=>tone(f,0.4),i*200))">A minor (sad)</button>
+    </div></div>`;
+  if(type==='chord')return`<div class="izone" style="background:${bg}"><div style="font-size:11px;font-weight:500;color:${color};margin-bottom:7px">C + E + G together = C major chord!</div>
+    <button class="btn pri" onclick="[261.63,329.63,392].forEach(f=>tone(f,1.5))">Play C major chord</button></div>`;
+  if(type==='chord2')return`<div class="izone" style="background:${bg}"><div style="font-size:11px;font-weight:500;color:${color};margin-bottom:7px">Hear major vs minor!</div>
+    <div style="display:flex;gap:7px"><button class="btn pri" onclick="[261.63,329.63,392].forEach(f=>tone(f,1.5))">C major (bright)</button>
+    <button class="btn" onclick="[261.63,311.13,392].forEach(f=>tone(f,1.5))">C minor (moody)</button></div></div>`;
+  return '';
+}
+
+let mInt=null;
+function playMetro(){clearInterval(mInt);let s=0;mInt=setInterval(()=>{tone(s%4===0?880:660,0.08,'square');s++;if(s>=8)clearInterval(mInt);},500);}
+let tInt=null;
+function playTempo(bpm){clearInterval(tInt);let s=0;tInt=setInterval(()=>{tone(s%4===0?880:660,0.08,'square');s++;if(s>=8)clearInterval(tInt);},Math.round(60000/bpm));}
+
+const WHITE_KEYS=['C4','D4','E4','F4','G4','A4','B4','C5','D5','E5'];
+const BLACK_AT={1:'C#4',3:'D#4',6:'F#4',8:'G#4',10:'A#4'};
+const SCALE_SEMIS={major:[0,2,4,5,7,9,11],minor:[9,11,0,2,4,5,7],penta:[0,2,4,7,9]};
+const NOTE_SEMI={C4:0,D4:2,E4:4,F4:5,G4:7,A4:9,B4:11,C5:0,D5:2,E5:4};
+
+let rBeats=Array(16).fill(false);
+rBeats[0]=rBeats[4]=rBeats[8]=rBeats[12]=true;
+let rPlaying=false,rInt2=null,rStep2=0;
+
+function renderPractice(){
+  document.getElementById('view-practice').innerHTML=`<div class="pg-h">Practice</div><div class="pg-s">Freestyle — no pressure, just play!</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div class="panel"><div class="panel-h">Mini keyboard</div>
+      <div class="pk-strip" id="pkstrip"></div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px">
+        <button class="btn" onclick="hlScale('major')">C major</button>
+        <button class="btn" onclick="hlScale('minor')">A minor</button>
+        <button class="btn" onclick="hlScale('penta')">Pentatonic</button>
+        <button class="btn" onclick="hlScale('none')">Clear</button>
+      </div>
+      <div style="font-size:11px;color:var(--color-text-secondary)" id="scale-info">Click any key to play!</div>
+    </div>
+    <div class="panel"><div class="panel-h">Rhythm builder</div>
+      <div class="rb-grid" id="rbgrid"></div>
+      <div style="display:flex;gap:5px;margin-top:7px">
+        <button class="btn pri" id="rplay-btn" onclick="toggleRhythm()">Play</button>
+        <button class="btn" onclick="clearRhythm()">Clear</button>
+        <button class="btn" onclick="randRhythm()">Random</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:7px">
+        <span style="font-size:11px;color:var(--color-text-secondary)">BPM</span>
+        <input type="range" min="60" max="180" value="100" step="1" id="bpm-sl" oninput="document.getElementById('bv').textContent=this.value" style="flex:1">
+        <span style="font-size:11px;font-weight:500;color:var(--color-text-primary);min-width:24px" id="bv">100</span>
+      </div>
+    </div>
+  </div>`;
+  buildKeys();buildRhythmGrid();
+}
+
+function buildKeys(){
+  const w=document.getElementById('pkstrip');if(!w)return;w.innerHTML='';
+  WHITE_KEYS.forEach((n,i)=>{
+    if(BLACK_AT[i]){const bk=document.createElement('div');bk.className='pk b';bk.dataset.note=BLACK_AT[i];bk.onmousedown=()=>{tone(NF[BLACK_AT[i]]||440,0.6);bk.classList.add('lit');};bk.onmouseup=bk.onmouseleave=()=>bk.classList.remove('lit');w.appendChild(bk);}
+    const k=document.createElement('div');k.className='pk w';k.dataset.note=n;k.textContent=n.replace(/\d/,'');
+    k.onmousedown=()=>{tone(NF[n]||440,0.6);k.classList.add('lit');};k.onmouseup=k.onmouseleave=()=>k.classList.remove('lit');
+    w.appendChild(k);
+  });
+}
+
+function hlScale(sc){
+  document.querySelectorAll('.pk.w').forEach(k=>{
+    const s=NOTE_SEMI[k.dataset.note];
+    const inSc=sc==='none'?false:(SCALE_SEMIS[sc]||[]).map(x=>x%12).includes((s||0)%12);
+    k.style.background=inSc?'#EEEDFE':'';k.style.borderColor=inSc?'#7F77DD':'';k.style.color=inSc?'#3C3489':'';
+  });
+  const info={major:'C major: C D E F G A B',minor:'A minor: A B C D E F G',penta:'Pentatonic: C D E G A',none:'All keys'};
+  const el=document.getElementById('scale-info');if(el)el.textContent=(info[sc]||'')+' — click any key!';
+}
+
+function buildRhythmGrid(){
+  const g=document.getElementById('rbgrid');if(!g)return;g.innerHTML='';
+  rBeats.forEach((on,i)=>{
+    const b=document.createElement('div');
+    b.className='rb'+(on?' on':'')+(i%4===0?' acc':'');
+    b.id='rb'+i;b.textContent=i%4===0?Math.floor(i/4)+1:'';
+    b.onclick=()=>{rBeats[i]=!rBeats[i];b.className='rb'+(rBeats[i]?' on':'')+(i%4===0?' acc':'');b.textContent=i%4===0?Math.floor(i/4)+1:'';};
+    g.appendChild(b);
+  });
+}
+
+function toggleRhythm(){
+  if(rPlaying){stopRhythm();return;}
+  rPlaying=true;rStep2=0;
+  const btn=document.getElementById('rplay-btn');if(btn)btn.textContent='Stop';
+  const bpm=parseInt(document.getElementById('bpm-sl')?.value||100);
+  rInt2=setInterval(()=>{
+    document.querySelectorAll('.rb.pl').forEach(e=>e.classList.remove('pl'));
+    const el=document.getElementById('rb'+rStep2);if(el)el.classList.add('pl');
+    if(rBeats[rStep2])tone(rStep2%4===0?200:160,0.08,'square');
+    rStep2=(rStep2+1)%16;
+  },Math.round(60000/bpm/4));
+}
+function stopRhythm(){rPlaying=false;clearInterval(rInt2);document.querySelectorAll('.rb.pl').forEach(e=>e.classList.remove('pl'));const btn=document.getElementById('rplay-btn');if(btn)btn.textContent='Play';}
+function clearRhythm(){stopRhythm();rBeats=Array(16).fill(false);buildRhythmGrid();}
+function randRhythm(){stopRhythm();rBeats=Array(16).fill(0).map((_,i)=>i%4===0||Math.random()>0.6);buildRhythmGrid();}
+
+const EAR=[
+  {title:'High or low?',desc:'Is this note HIGH or LOW?',play:()=>{const h=Math.random()>0.5;tone(h?523.25:261.63,0.8);return h?'high':'low';},opts:['High','Low'],chk:(a,t)=>a.toLowerCase()===t},
+  {title:'Going up or down?',desc:'Does this melody go UP or DOWN?',play:()=>{const u=Math.random()>0.5;(u?[261.63,329.63,392]:[392,329.63,261.63]).forEach((f,i)=>setTimeout(()=>tone(f,0.4),i*300));return u?'up':'down';},opts:['Going up','Going down'],chk:(a,t)=>a.toLowerCase().includes(t)},
+  {title:'Same or different?',desc:'Are these two notes the SAME or DIFFERENT?',play:()=>{const s=Math.random()>0.5;tone(392,0.5);setTimeout(()=>tone(s?392:440,0.5),700);return s?'same':'different';},opts:['Same','Different'],chk:(a,t)=>a.toLowerCase()===t},
+  {title:'Count the notes',desc:'How many notes do you hear?',play:()=>{const n=2+Math.floor(Math.random()*3);[261.63,329.63,392,440,523.25].slice(0,n).forEach((f,i)=>setTimeout(()=>tone(f,0.4),i*400));return String(n);},opts:['2','3','4'],chk:(a,t)=>a===t},
+];
+const earTruth={};const earDone={};
+
+function renderEar(){
+  document.getElementById('view-ear').innerHTML=`<div class="pg-h">Ear training</div><div class="pg-s">Listen carefully and identify the sounds — earn XP for each correct answer!</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">${EAR.map((ex,ei)=>`<div class="panel">
+    <div class="panel-h">${ex.title}</div>
+    <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:9px;line-height:1.5">${ex.desc}</div>
+    <button class="ear-o" onclick="playEar(${ei})" style="margin-bottom:8px"><div class="play-ic"></div><span>Play sound</span></button>
+    <div id="eopts-${ei}">${ex.opts.map(o=>`<button class="ear-o" onclick="ansEar(${ei},'${o}',this)">${o}</button>`).join('')}</div>
+    <div style="font-size:11px;color:var(--color-text-secondary);margin-top:5px;min-height:14px" id="efb-${ei}"></div>
+  </div>`).join('')}</div>`;
+}
+function playEar(ei){earTruth[ei]=EAR[ei].play();earDone[ei]=false;document.querySelectorAll(`#eopts-${ei} button`).forEach(b=>{b.className='ear-o';b.disabled=false;});const f=document.getElementById('efb-'+ei);if(f)f.textContent='Now pick your answer!';}
+function ansEar(ei,ans,el){
+  if(!earTruth[ei]){const f=document.getElementById('efb-'+ei);if(f)f.textContent='Press Play first!';return;}
+  if(earDone[ei])return;
+  earDone[ei]=true;
+  const ok=EAR[ei].chk(ans,earTruth[ei]);
+  el.className='ear-o '+(ok?'c':'w');
+  document.querySelectorAll(`#eopts-${ei} button`).forEach(b=>b.disabled=true);
+  if(ok)addXP(10);
+  const f=document.getElementById('efb-'+ei);if(f)f.textContent=ok?'Correct! +10 XP':'Not quite. Hit Play and try again!';
+}
+
+function renderStats(){
+  const acc=CU.quizTotal?Math.round(CU.quizCorrect/CU.quizTotal*100):0;
+  document.getElementById('view-stats').innerHTML=`<div class="pg-h">My stats</div>
+  <div class="mcard-grid">
+    <div class="mcard"><div class="mcard-l">Total XP</div><div class="mcard-v">${CU.xp}</div></div>
+    <div class="mcard"><div class="mcard-l">Lessons done</div><div class="mcard-v">${totalDone()}</div></div>
+    <div class="mcard"><div class="mcard-l">Quiz accuracy</div><div class="mcard-v">${acc}%</div></div>
+    <div class="mcard"><div class="mcard-l">Streak</div><div class="mcard-v">${CU.streak||0} days</div></div>
+  </div>
+  <div class="panel"><div class="panel-h">Course progress</div>
+    ${COURSES.map(c=>`<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px"><span style="color:var(--color-text-primary)">${c.icon} ${c.title}</span><span style="color:var(--color-text-secondary)">${cDone(c.id)}/${c.lessons.length}</span></div><div class="pbw" style="margin-bottom:0"><div class="pbf" style="width:${cPct(c.id)}%;background:${c.color}"></div></div></div>`).join('')}
+  </div>`;
+}
+
+function renderBadges(){
+  const earned=BADGES.filter(b=>b.check(CU)),locked=BADGES.filter(b=>!b.check(CU));
+  document.getElementById('view-badges').innerHTML=`<div class="pg-h">Badges & achievements</div><div class="pg-s">${earned.length} of ${BADGES.length} earned</div>
+  <div class="sec-h">Earned (${earned.length})</div>
+  <div class="badge-g" style="margin-bottom:16px">${earned.length?earned.map(b=>`<div class="badge-c"><div class="badge-ico">${b.icon}</div><div class="badge-n">${b.name}</div><div class="badge-d">${b.desc}</div><span class="badge-tag" style="background:#E1F5EE;color:#085041">Earned</span></div>`).join(''):'<div style="font-size:12px;color:var(--color-text-secondary);padding:8px 0">Complete lessons to earn badges!</div>'}</div>
+  <div class="sec-h">Locked (${locked.length})</div>
+  <div class="badge-g">${locked.map(b=>`<div class="badge-c" style="opacity:0.4"><div class="badge-ico">${b.icon}</div><div class="badge-n">${b.name}</div><div class="badge-d">${b.desc}</div><span class="badge-tag" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">Locked</span></div>`).join('')}</div>`;
+}
+
+function initAvatarPicker(){
+  const el=document.getElementById('av-row');if(!el)return;el.innerHTML='';
+  AVATARS.forEach((av,i)=>{const d=document.createElement('div');d.className='av-opt'+(i===0?' sel':'');d.dataset.av=av;d.textContent=av;d.onclick=()=>{document.querySelectorAll('.av-opt').forEach(x=>x.classList.remove('sel'));d.classList.add('sel');};el.appendChild(d);});
+}
+
+loadDB();
+initAvatarPicker();
+if(loadSession()){launchApp();}
+</script>
