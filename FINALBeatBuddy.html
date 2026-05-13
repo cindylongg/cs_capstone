@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BeatBuddy Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:#F0EFE9;color:#1A1A1A;min-height:100vh;-webkit-font-smoothing:antialiased}
+input,button,select{font-family:inherit}
+:root{
+  --p:#6C63FF;--ph:#5A52E0;--pl:#EEEEFF;--pd:#312E8A;
+  --g:#16A34A;--gl:#DCFCE7;--gd:#14532D;
+  --a:#D97706;--al:#FEF3C7;--ad:#92400E;
+  --r:#DC2626;--rl:#FEE2E2;--rd:#7F1D1D;
+  --o:#EA580C;--ol:#FFEDD5;--b:#2563EB;--bl:#DBEAFE;
+  --s:#fff;--s2:#F0EFE9;--s3:#E5E3DB;
+  --br:rgba(0,0,0,.08);--brx:rgba(0,0,0,.14);
+  --t1:#1A1A1A;--t2:#525252;--t3:#A3A3A3;
+  --sh1:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh2:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+  --sh3:0 12px 32px rgba(0,0,0,.10),0 4px 8px rgba(0,0,0,.06);
+  --r4:4px;--r8:8px;--r12:12px;--r16:16px;--r20:20px;--rf:999px
+}
+.pg{display:none}.pg.on{display:flex;min-height:100vh;align-items:center;justify-content:center;padding:24px}
+.shell{display:none}.shell.on{display:flex;height:100vh;overflow:hidden}
+
+/* ── AUTH ───────────────────────────────────── */
+.acard{background:var(--s);border:1px solid var(--br);border-radius:var(--r20);padding:36px 32px;width:100%;max-width:420px;box-shadow:var(--sh3)}
+.brand{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:28px}
+.brand-m{width:40px;height:40px;background:var(--p);border-radius:11px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(108,99,255,.3)}
+.brand-m svg{width:22px;height:22px;fill:white}
+.brand-n{font-size:17px;font-weight:800;letter-spacing:-.3px}
+.a-title{font-size:22px;font-weight:800;text-align:center;margin-bottom:4px;letter-spacing:-.4px}
+.a-sub{font-size:14px;color:var(--t2);text-align:center;margin-bottom:24px}
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:11px;font-weight:700;color:var(--t2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}
+.fld input{width:100%;padding:11px 14px;border-radius:var(--r8);border:1.5px solid var(--brx);background:var(--s2);font-size:14px;color:var(--t1);outline:none;transition:all .15s}
+.fld input:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(108,99,255,.15);background:var(--s)}
+.ferr{font-size:12px;color:var(--r);margin-top:4px;min-height:16px;font-weight:600}
+.pww{position:relative}
+.pww input{padding-right:52px}
+.ptog{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--t3);font-size:12px;font-weight:700;padding:3px 5px;letter-spacing:.02em}
+.ptog:hover{color:var(--t2)}
+.str-bar{height:3px;background:var(--s3);border-radius:2px;margin-top:6px;overflow:hidden}
+.str-f{height:100%;border-radius:2px;transition:width .3s,background .3s;width:0}
+.gerr{background:var(--rl);border:1px solid rgba(220,38,38,.2);border-radius:var(--r8);padding:11px 14px;font-size:13px;color:var(--rd);margin-bottom:14px;display:none;font-weight:500;line-height:1.5}
+.abtn{width:100%;padding:12px;border-radius:var(--r8);background:var(--p);color:white;border:none;font-size:14px;font-weight:700;margin-top:4px;transition:all .15s;box-shadow:0 2px 8px rgba(108,99,255,.3);letter-spacing:.01em}
+.abtn:hover{background:var(--ph);transform:translateY(-1px);box-shadow:0 4px 14px rgba(108,99,255,.35)}
+.abtn:active{transform:none}
+.abtn:disabled{opacity:.45;cursor:default;transform:none;box-shadow:none}
+.asw{text-align:center;font-size:13px;color:var(--t2);margin-top:18px}
+.asw a{color:var(--p);font-weight:700;text-decoration:none;cursor:pointer}
+.asw a:hover{text-decoration:underline}
+.avrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.avopt{width:36px;height:36px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;font-size:19px;display:flex;align-items:center;justify-content:center;background:var(--s2);transition:all .15s}
+.avopt:hover{background:var(--pl)}
+.avopt.sel{border-color:var(--p);background:var(--pl);box-shadow:0 0 0 3px rgba(108,99,255,.15)}
+
+/* ── SIDEBAR ─────────────────────────────────── */
+.sidebar{width:232px;background:var(--s);border-right:1px solid var(--br);display:flex;flex-direction:column;flex-shrink:0}
+.sb-hdr{padding:16px 14px;border-bottom:1px solid var(--br)}
+.sb-logo{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.sb-lm{width:27px;height:27px;background:var(--p);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-lm svg{width:15px;height:15px;fill:white}
+.sb-ln{font-size:13px;font-weight:800;letter-spacing:-.2px}
+.sb-user{display:flex;align-items:center;gap:9px}
+.sb-av{width:34px;height:34px;border-radius:50%;background:var(--pl);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;border:2px solid rgba(108,99,255,.2)}
+.sb-ui{flex:1;min-width:0}
+.sb-un{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-ulv{font-size:11px;color:var(--t3);font-weight:500}
+.xpb{height:3px;background:var(--s3);border-radius:2px;margin-top:4px;overflow:hidden}
+.xpf{height:100%;background:var(--p);border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.sb-nav{flex:1;overflow-y:auto;padding:8px 0}
+.sb-sec{padding:10px 14px 4px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+.si{display:flex;align-items:center;gap:9px;padding:8px 10px;margin:1px 7px;border-radius:var(--r8);transition:all .12s;border:1px solid transparent;cursor:pointer}
+.si:hover{background:var(--s2)}
+.si.act{background:var(--pl);border-color:rgba(108,99,255,.15)}
+.si.act .sil{color:var(--pd);font-weight:700}
+.sii{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.sil{font-size:13px;color:var(--t1);flex:1;font-weight:500}
+.sbadge{font-size:10px;padding:2px 6px;border-radius:var(--rf);background:var(--gl);color:var(--gd);font-weight:700}
+.sb-streak{margin:8px 10px;padding:10px 12px;background:var(--al);border-radius:var(--r12);display:flex;align-items:center;gap:9px;border:1px solid rgba(217,119,6,.2)}
+.sb-sn{font-size:20px;font-weight:800;color:var(--ad)}
+.sb-sl{font-size:11px;color:var(--ad);line-height:1.4;font-weight:600}
+.sb-so{margin:4px 10px 12px;padding:8px;border-radius:var(--r8);border:1.5px solid var(--brx);background:var(--s2);font-size:12px;font-weight:600;color:var(--t2);text-align:center;transition:all .15s;width:calc(100% - 20px);cursor:pointer}
+.sb-so:hover{background:var(--rl);color:var(--r);border-color:rgba(220,38,38,.3)}
+
+/* ── MAIN ────────────────────────────────────── */
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--s);border-bottom:1px solid var(--br);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.bc{font-size:13px;color:var(--t2);font-weight:500}
+.bc b{color:var(--t1);font-weight:700}
+.tps{display:flex;gap:8px}
+.tp{font-size:12px;color:var(--t2);padding:4px 10px;border-radius:var(--rf);background:var(--s2);border:1px solid var(--br);font-weight:600}
+.tp b{color:var(--t1);font-weight:700}
+.content{flex:1;padding:20px;overflow-y:auto;background:var(--s2)}
+.vw{display:none}.vw.on{display:block}
+
+/* ── COMMON ──────────────────────────────────── */
+.pt{font-size:22px;font-weight:800;margin-bottom:4px;letter-spacing:-.4px}
+.ps{font-size:14px;color:var(--t2);margin-bottom:18px;line-height:1.5}
+.st{font-size:14px;font-weight:700;margin-bottom:10px;margin-top:6px;letter-spacing:-.1px}
+.mg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:18px}
+.mc{background:var(--s3);border-radius:var(--r12);padding:14px 15px;border:1px solid var(--br)}
+.ml{font-size:11px;color:var(--t2);margin-bottom:3px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.mv{font-size:24px;font-weight:800;letter-spacing:-.5px}
+.ms{font-size:11px;color:var(--t3);margin-top:2px;font-weight:500}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:18px}
+.cc{background:var(--s);border:1px solid var(--br);border-radius:var(--r16);padding:16px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.cc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--cc-accent,var(--p));border-radius:var(--r16) var(--r16) 0 0}
+.cc:hover{border-color:rgba(108,99,255,.3);box-shadow:var(--sh2);transform:translateY(-2px)}
+.cci{font-size:22px;margin-bottom:8px;margin-top:4px}
+.cct{font-size:13px;font-weight:700;margin-bottom:4px}
+.ccd{font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:10px}
+.cpb{height:5px;background:var(--s2);border-radius:3px;overflow:hidden;margin-bottom:5px}
+.cpf{height:100%;border-radius:3px;transition:width .4s}
+.cm{display:flex;justify-content:space-between;font-size:11px;color:var(--t3);font-weight:600}
+.clk{opacity:.4;pointer-events:none}
+.pnl{background:var(--s);border:1px solid var(--br);border-radius:var(--r16);padding:16px;margin-bottom:12px;box-shadow:var(--sh1)}
+.pnh{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
+.ar{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--br)}
+.ar:last-child{border-bottom:none}
+.arico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.att{flex:1}
+.artit{font-size:13px;font-weight:600}
+.ardesc{font-size:11px;color:var(--t3);margin-top:1px}
+
+/* ── BUTTONS ─────────────────────────────────── */
+.btn{padding:8px 16px;border-radius:var(--r8);border:1.5px solid var(--brx);background:var(--s2);font-size:13px;font-weight:600;color:var(--t1);transition:all .15s;letter-spacing:.01em;cursor:pointer}
+.btn:hover{background:var(--s3);border-color:rgba(0,0,0,.2)}
+.btn.p{background:var(--p);color:white;border-color:var(--p);box-shadow:0 2px 6px rgba(108,99,255,.25)}
+.btn.p:hover{background:var(--ph);box-shadow:0 3px 10px rgba(108,99,255,.35);transform:translateY(-1px)}
+.btn.g{background:var(--g);color:white;border-color:var(--g);box-shadow:0 2px 6px rgba(22,163,74,.25)}
+.btn.g:hover{background:#15803D;transform:translateY(-1px)}
+.btn.r{background:var(--r);color:white;border-color:var(--r)}
+.btn.r:hover{background:#B91C1C}
+.btn.o{background:var(--o);color:white;border-color:var(--o)}
+.btn:disabled{opacity:.38;cursor:default;transform:none!important;box-shadow:none!important}
+.br{display:flex;gap:8px;margin-top:12px;align-items:center}
+
+/* ── LESSON ──────────────────────────────────── */
+.llay{display:grid;grid-template-columns:1fr 245px;gap:14px;align-items:start}
+.lcard{background:var(--s);border:1px solid var(--br);border-radius:var(--r16);padding:20px;box-shadow:var(--sh1)}
+.leye{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px}
+.lh{font-size:19px;font-weight:800;margin-bottom:12px;letter-spacing:-.3px}
+.lb{font-size:14px;color:var(--t2);line-height:1.85;margin-bottom:14px}
+.lb p{margin-bottom:8px}
+.lb strong{color:var(--t1);font-weight:700}
+.iz{border-radius:var(--r12);padding:16px;margin-bottom:14px}
+.sdots{display:flex;gap:6px;margin-bottom:14px;align-items:center}
+.sd{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--brx);background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--t3);cursor:pointer;transition:all .15s;flex-shrink:0}
+.sd.cur{background:var(--p);color:white;border-color:var(--p);box-shadow:0 2px 6px rgba(108,99,255,.3)}
+.sd.dn{background:var(--g);color:white;border-color:var(--g)}
+.sln{flex:1;height:1px;background:var(--br)}
+.qcard{background:var(--s2);border-radius:var(--r12);padding:16px;margin-bottom:10px;border:1px solid var(--br)}
+.qnum{font-size:11px;color:var(--t3);margin-bottom:6px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.qq{font-size:14px;font-weight:700;margin-bottom:12px;line-height:1.5}
+.qopts{display:flex;flex-direction:column;gap:6px}
+.qo{padding:11px 14px;border-radius:var(--r8);border:1.5px solid var(--brx);background:var(--s);font-size:13px;font-weight:500;color:var(--t1);text-align:left;transition:all .15s;width:100%;cursor:pointer}
+.qo:hover:not([disabled]){background:var(--pl);border-color:rgba(108,99,255,.3)}
+.qo.c{background:var(--gl);border-color:rgba(22,163,74,.4);color:var(--gd);font-weight:700}
+.qo.w{background:var(--rl);border-color:rgba(220,38,38,.3);color:var(--rd)}
+.qfb{margin-top:8px;font-size:13px;min-height:18px;font-weight:600;color:var(--t2)}
+.dbanner{background:linear-gradient(135deg,#DCFCE7,#BBF7D0);border:1px solid rgba(22,163,74,.25);border-radius:var(--r12);padding:20px;text-align:center;margin-top:14px}
+.dbh{font-size:17px;font-weight:800;color:var(--gd);margin-bottom:4px}
+.dbs{font-size:13px;color:var(--g);margin-bottom:12px;font-weight:600}
+.cli{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;color:var(--t2);font-weight:500}
+.cli.d{opacity:.45;text-decoration:line-through}
+.clc{width:15px;height:15px;border-radius:50%;border:1.5px solid var(--brx);flex-shrink:0}
+.clc.d{background:var(--g);border-color:var(--g);display:flex;align-items:center;justify-content:center}
+.clc.d::after{content:'';display:block;width:5px;height:3px;border-left:1.5px solid white;border-bottom:1.5px solid white;transform:rotate(-45deg) translate(1px,-1px)}
+
+/* ── PRACTICE ─────────────────────────────────── */
+.pks{display:flex;gap:2px;overflow-x:auto;margin-bottom:10px;padding-bottom:4px}
+.pk{height:64px;border-radius:0 0 6px 6px;border:1px solid rgba(0,0,0,.15);background:var(--s);cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding-bottom:5px;font-size:9px;color:var(--t3);transition:background .08s;flex-shrink:0;user-select:none;font-weight:700}
+.pk.w{width:32px}
+.pk.b{width:20px;height:40px;background:#1A1A1A;color:#666;margin:0 -10px;z-index:2;border-radius:0 0 4px 4px}
+.pk.w:active,.pk.w.lit{background:var(--pl);border-color:var(--p);color:var(--p)}
+.pk.b:active,.pk.b.lit{background:var(--p)}
+.rg{display:flex;gap:4px;flex-wrap:wrap}
+.rb{width:32px;height:32px;border-radius:7px;border:1.5px solid var(--brx);background:var(--s2);cursor:pointer;transition:all .1s;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--t3);flex-shrink:0;user-select:none}
+.rb.on{background:var(--p);color:white;border-color:var(--pd);box-shadow:0 1px 4px rgba(108,99,255,.3)}
+.rb.ac{background:var(--g);color:white;border-color:var(--gd)}
+.rb.pl{outline:2.5px solid #F59E0B;outline-offset:2px}
+
+/* ── EAR TRAINING ────────────────────────────── */
+.eo{padding:10px 14px;border-radius:var(--r8);border:1.5px solid var(--brx);background:var(--s);font-size:13px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:8px;margin-bottom:6px;transition:all .15s;width:100%;text-align:left;cursor:pointer}
+.eo:hover{background:var(--pl);border-color:rgba(108,99,255,.3)}
+.eo.c{background:var(--gl);border-color:rgba(22,163,74,.4);color:var(--gd)}
+.eo.w{background:var(--rl);border-color:rgba(220,38,38,.3);color:var(--rd)}
+.plic{width:22px;height:22px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.plic::after{content:'';border-left:7px solid white;border-top:5px solid transparent;border-bottom:5px solid transparent;margin-left:2px}
+
+/* ── BADGES ──────────────────────────────────── */
+.bgg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.bgc{background:var(--s);border:1px solid var(--br);border-radius:var(--r12);padding:14px;text-align:center;box-shadow:var(--sh1)}
+.bgi{font-size:28px;margin-bottom:6px}
+.bgn{font-size:12px;font-weight:700;margin-bottom:3px}
+.bgd{font-size:11px;color:var(--t3);line-height:1.4}
+.bgt{font-size:10px;padding:3px 8px;border-radius:var(--rf);margin-top:6px;display:inline-block;font-weight:700}
+
+/* ── NOTE DETECTOR ───────────────────────────── */
+.nr{width:120px;height:120px;border-radius:50%;border:5px solid var(--br);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:all .2s;background:var(--s2)}
+.nbig{font-size:48px;font-weight:800;line-height:1;transition:color .15s;letter-spacing:-1px}
+.noct{font-size:14px;color:var(--t3);font-weight:700}
+.tbar{height:12px;background:var(--s3);border-radius:6px;position:relative;margin:10px 0 6px;border:1px solid var(--br)}
+.tc{position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--p);transform:translateX(-50%)}
+.tn{position:absolute;top:1px;bottom:1px;width:5px;border-radius:3px;background:var(--t3);transition:left .1s,background .2s;left:50%;transform:translateX(-50%)}
+.tls{display:flex;justify-content:space-between;font-size:10px;color:var(--t3);margin-bottom:10px;font-weight:700}
+.vbar{height:6px;background:var(--s3);border-radius:3px;overflow:hidden;margin-top:10px;border:1px solid var(--br)}
+.vf{height:100%;background:var(--g);border-radius:3px;transition:width .06s;width:0}
+.sdot{width:9px;height:9px;border-radius:50%;background:var(--t3);display:inline-block;margin-right:7px;vertical-align:middle}
+.sdot.on{background:var(--g);animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.npill{padding:4px 10px;border-radius:var(--rf);font-size:12px;font-weight:700;animation:pop .15s cubic-bezier(.4,0,.2,1);display:inline-block;margin:3px}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.mwarn{background:var(--al);border:1px solid rgba(217,119,6,.25);border-radius:var(--r8);padding:12px 14px;font-size:13px;color:var(--ad);line-height:1.6;display:none;font-weight:500;margin-bottom:12px}
+.dkey{cursor:pointer;display:inline-flex;align-items:flex-end;justify-content:center;padding-bottom:3px;transition:background .1s;flex-shrink:0;user-select:none}
+.dkey.lit{background:var(--p)!important;color:white!important;border-color:var(--pd)!important}
+.ic{background:var(--s3);border-radius:var(--r8);padding:10px 12px;border:1px solid var(--br)}
+.icl{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.icv{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.ics{font-size:10px;color:var(--t3);font-weight:600;margin-top:1px}
+.pbw{height:5px;background:var(--s2);border-radius:3px;overflow:hidden;margin:4px 0 12px}
+.pbf{height:100%;border-radius:3px;transition:width .4s}
+
+/* ── SCROLLBAR ───────────────────────────────── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,.12);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.2)}
+</style>
+</head>
+<body>
+
+<!-- SIGN IN -->
+<div id="pg-si" class="pg on">
+<div class="acard">
+  <div class="brand"><div class="brand-m"><svg viewBox="0 0 20 20"><rect x="2" y="2" width="4" height="16" rx="2"/><rect x="8" y="5" width="4" height="13" rx="2"/><rect x="14" y="1" width="4" height="17" rx="2"/></svg></div><span class="brand-n">BeatBuddy Academy</span></div>
+  <div class="a-title">Welcome back 👋</div>
+  <div class="a-sub">Sign in to continue your music journey</div>
+  <div id="si-ge" class="gerr"></div>
+  <div class="fld"><label>Email address</label><input type="email" id="si-em" placeholder="you@example.com" autocomplete="email"><div class="ferr" id="si-ee"></div></div>
+  <div class="fld"><label>Password</label><div class="pww"><input type="password" id="si-pw" placeholder="Your password" autocomplete="current-password"><button class="ptog" type="button" onclick="tpw('si-pw',this)">Show</button></div><div class="ferr" id="si-pe"></div></div>
+  <button class="abtn" onclick="doSI()">Sign in</button>
+  <div class="asw">No account? <a onclick="spg('pg-su')">Create one — it's free</a></div>
+</div></div>
+
+<!-- SIGN UP -->
+<div id="pg-su" class="pg">
+<div class="acard">
+  <div class="brand"><div class="brand-m"><svg viewBox="0 0 20 20"><rect x="2" y="2" width="4" height="16" rx="2"/><rect x="8" y="5" width="4" height="13" rx="2"/><rect x="14" y="1" width="4" height="17" rx="2"/></svg></div><span class="brand-n">BeatBuddy Academy</span></div>
+  <div class="a-title">Create your account 🎵</div>
+  <div class="a-sub">Join thousands of kids learning music!</div>
+  <div id="su-ge" class="gerr"></div>
+  <div class="fld"><label>Your name</label><input type="text" id="su-nm" placeholder="e.g. Jamie" autocomplete="given-name"><div class="ferr" id="su-ne"></div></div>
+  <div class="fld"><label>Email address</label><input type="email" id="su-em" placeholder="you@example.com" autocomplete="email"><div class="ferr" id="su-ee"></div></div>
+  <div class="fld"><label>Password</label><div class="pww"><input type="password" id="su-pw" placeholder="At least 6 characters" oninput="pwStr(this.value)" autocomplete="new-password"><button class="ptog" type="button" onclick="tpw('su-pw',this)">Show</button></div><div class="str-bar"><div class="str-f" id="str-f"></div></div><div class="ferr" id="su-pe"></div></div>
+  <div class="fld"><label>Confirm password</label><div class="pww"><input type="password" id="su-pw2" placeholder="Repeat your password" autocomplete="new-password"><button class="ptog" type="button" onclick="tpw('su-pw2',this)">Show</button></div><div class="ferr" id="su-p2e"></div></div>
+  <div class="fld"><label>Pick your avatar</label><div class="avrow" id="avrow"></div></div>
+  <button class="abtn" id="su-btn" onclick="doSU()">Create account</button>
+  <div class="asw">Already have an account? <a onclick="spg('pg-si')">Sign in</a></div>
+</div></div>
+
+<!-- APP -->
+<div id="pg-app" class="shell">
+  <div class="sidebar">
+    <div class="sb-hdr">
+      <div class="sb-logo"><div class="sb-lm"><svg viewBox="0 0 20 20"><rect x="2" y="2" width="4" height="16" rx="2"/><rect x="8" y="5" width="4" height="13" rx="2"/><rect x="14" y="1" width="4" height="17" rx="2"/></svg></div><span class="sb-ln">BeatBuddy Academy</span></div>
+      <div class="sb-user"><div class="sb-av" id="sbav"></div><div class="sb-ui"><div class="sb-un" id="sbun"></div><div class="sb-ulv" id="sbulv"></div><div class="xpb"><div class="xpf" id="xpf"></div></div></div></div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-sec">Main</div>
+      <div class="si act" id="nv-home" onclick="gv('home',this)"><div class="sii" style="background:#EEEEFF">🏠</div><span class="sil">Home</span></div>
+      <div class="si" id="nv-courses" onclick="gv('courses',this)"><div class="sii" style="background:#DCFCE7">📚</div><span class="sil">Courses</span></div>
+      <div class="si" id="nv-practice" onclick="gv('practice',this)"><div class="sii" style="background:#FEF3C7">🎹</div><span class="sil">Practice</span></div>
+      <div class="si" id="nv-ear" onclick="gv('ear',this)"><div class="sii" style="background:#FCE7F3">👂</div><span class="sil">Ear training</span></div>
+      <div class="si" id="nv-det" onclick="gv('det',this)"><div class="sii" style="background:#DBEAFE">🎤</div><span class="sil">Note detector</span></div>
+      <div class="sb-sec">My progress</div>
+      <div class="si" id="nv-stats" onclick="gv('stats',this)"><div class="sii" style="background:#E0F2FE">📈</div><span class="sil">My stats</span></div>
+      <div class="si" id="nv-badges" onclick="gv('badges',this)"><div class="sii" style="background:#FEF3C7">🏆</div><span class="sil">Badges</span></div>
+      <div class="sb-sec">Current unit</div>
+      <div id="unav"></div>
+    </div>
+    <div class="sb-streak"><div class="sb-sn" id="sbstr">0</div><div><div class="sb-sl" style="font-weight:800">Day streak 🔥</div><div class="sb-sl">Keep it up!</div></div></div>
+    <button class="sb-so" onclick="doSO()">Sign out</button>
+  </div>
+  <div class="main">
+    <div class="topbar"><div class="bc" id="appbc"><b>Home</b></div><div class="tps"><div class="tp">XP <b id="tbxp">0</b></div><div class="tp">❤️ <b id="tbh">5</b></div><div class="tp">🔥 <b id="tbst">0</b></div></div></div>
+    <div class="content">
+      <div class="vw on" id="vw-home"></div>
+      <div class="vw" id="vw-courses"></div>
+      <div class="vw" id="vw-lesson"></div>
+      <div class="vw" id="vw-practice"></div>
+      <div class="vw" id="vw-ear"></div>
+      <div class="vw" id="vw-det"></div>
+      <div class="vw" id="vw-stats"></div>
+      <div class="vw" id="vw-badges"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── AUDIO ── */
+let _ac=null;
+function getAC(){if(!_ac)_ac=new(window.AudioContext||window.webkitAudioContext)();if(_ac.state==='suspended')_ac.resume();return _ac;}
+function tone(f,d,t){try{const c=getAC(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type=t||'triangle';o.frequency.value=f;g.gain.setValueAtTime(0.28,c.currentTime);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+(d||0.6));o.start();o.stop(c.currentTime+(d||0.6)+0.05);}catch(e){}}
+
+/* ── LEVELS ── */
+const AVS=['🎵','🎸','🥁','🎹','🎺','🎻','🪗','🎤'];
+const LVS=[{m:0,t:'Beginner'},{m:100,t:'Note Finder'},{m:250,t:'Rhythm Keeper'},{m:500,t:'Melody Maker'},{m:800,t:'Harmony Hero'},{m:1200,t:'Music Master'}];
+function getLv(x){let l=0;LVS.forEach((v,i)=>{if(x>=v.m)l=i;});return l;}
+function getLvT(x){return LVS[getLv(x)].t;}
+function getLvP(x){const i=getLv(x),c=LVS[i].m,n=LVS[i+1]?LVS[i+1].m:c+500;return Math.round((x-c)/(n-c)*100);}
+
+/* ── DATABASE ── */
+let DB={};
+function ldb(){try{DB=JSON.parse(localStorage.getItem('bba8')||'{}');}catch(e){DB={};}}
+function sdb(){try{localStorage.setItem('bba8',JSON.stringify(DB));}catch(e){}}
+function gu(e){return DB[e.toLowerCase()]||null;}
+function sv(e,d){DB[e.toLowerCase()]=d;sdb();}
+let CU=null;
+function lses(){try{const s=JSON.parse(localStorage.getItem('bba8s')||'null');if(s&&DB[s.e]){CU=DB[s.e];return true;}}catch(e){}return false;}
+function sses(){try{if(CU)localStorage.setItem('bba8s',JSON.stringify({e:CU.email}));else localStorage.removeItem('bba8s');}catch(e){}}
+
+/* ── AUTH ── */
+function spg(id){document.querySelectorAll('.pg,.shell').forEach(el=>{el.classList.remove('on');if(el.id===id)el.classList.add('on');});}
+function tpw(id,b){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'Show':'Hide';}
+function pwStr(pw){const f=document.getElementById('str-f');if(!f)return;let s=0;if(pw.length>=6)s++;if(pw.length>=10)s++;if(/[A-Z]/.test(pw))s++;if(/[0-9]/.test(pw))s++;if(/[^A-Za-z0-9]/.test(pw))s++;const c=['','#DC2626','#D97706','#D97706','#16A34A','#16A34A'];f.style.width=Math.round(s/5*100)+'%';f.style.background=c[s]||'';}
+function sfe(id,m){const e=document.getElementById(id);if(e)e.textContent=m;}
+function sge(id,m){const e=document.getElementById(id);if(e){e.textContent=m;e.style.display=m?'block':'none';}}
+
+function doSI(){
+  sge('si-ge','');sfe('si-ee','');sfe('si-pe','');
+  const em=(document.getElementById('si-em').value||'').trim();
+  const pw=document.getElementById('si-pw').value||'';
+  if(!em){sfe('si-ee','Email is required');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){sfe('si-ee','Enter a valid email address');return;}
+  if(!pw){sfe('si-pe','Password is required');return;}
+  const u=gu(em);
+  if(!u){sge('si-ge','No account found with that email.');return;}
+  if(u.pw!==btoa(pw)){sfe('si-pe','Incorrect password');return;}
+  CU=u;sses();launch();
+}
+function doSU(){
+  sge('su-ge','');['su-ne','su-ee','su-pe','su-p2e'].forEach(id=>sfe(id,''));
+  const nm=(document.getElementById('su-nm').value||'').trim();
+  const em=(document.getElementById('su-em').value||'').trim();
+  const pw=document.getElementById('su-pw').value||'';
+  const pw2=document.getElementById('su-pw2').value||'';
+  const av=document.querySelector('.avopt.sel')?.dataset.av||AVS[0];
+  let ok=true;
+  if(!nm){sfe('su-ne','Name is required');ok=false;}
+  if(!em){sfe('su-ee','Email is required');ok=false;}
+  else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){sfe('su-ee','Enter a valid email address');ok=false;}
+  else if(gu(em)){sfe('su-ee','An account with this email already exists');ok=false;}
+  if(pw.length<6){sfe('su-pe','Password must be at least 6 characters');ok=false;}
+  if(pw!==pw2){sfe('su-p2e','Passwords do not match');ok=false;}
+  if(!ok)return;
+  const btn=document.getElementById('su-btn');btn.disabled=true;btn.textContent='Creating account…';
+  setTimeout(()=>{
+    const u={email:em.toLowerCase(),name:nm,pw:btoa(pw),avatar:av,xp:0,streak:0,hearts:5,ld:{},qc:0,qt:0,join:new Date().toLocaleDateString(),lastDay:'',usedDet:false};
+    sv(em,u);CU=u;sses();btn.disabled=false;btn.textContent='Create account';launch();
+  },600);
+}
+function doSO(){stopDet();stopRhy();CU=null;sses();document.getElementById('si-em').value='';document.getElementById('si-pw').value='';sge('si-ge','');sfe('si-ee','');sfe('si-pe','');spg('pg-si');}
+
+/* ── DATA ── */
+const CRS=[
+  {id:'rhythm',title:'Rhythm & beat',icon:'🥁',color:'#16A34A',bg:'#DCFCE7',acc:'#16A34A',desc:'Beats, tempo, note lengths and rests.',lessons:['r1','r2','r3'],unlocked:true},
+  {id:'notes', title:'Notes & pitch', icon:'🎵',color:'#6C63FF',bg:'#EEEEFF',acc:'#6C63FF',desc:'The musical alphabet and how pitch works.',lessons:['n1','n2'],unlocked:true},
+  {id:'scales',title:'Scales & keys', icon:'🎼',color:'#EA580C',bg:'#FFEDD5',acc:'#EA580C',desc:'Major, minor, and how scales shape mood.',lessons:['s1','s2'],unlocked:false},
+  {id:'chords',title:'Chords',         icon:'🎹',color:'#D97706',bg:'#FEF3C7',acc:'#D97706',desc:'Build chords and understand harmony.',lessons:['c1','c2'],unlocked:false},
+];
+const LES={
+  r1:{title:'What is a beat?',course:'rhythm',steps:[
+    {type:'read',text:'<p>A <strong>beat</strong> is the basic pulse of music — like a heartbeat. When you tap your foot to a song, you feel the beat!</p><p>Beats are grouped into <strong>measures</strong>. In 4/4 time there are 4 beats per measure. Beat 1 is always the strongest — ONE-two-three-four.</p>',vis:'metro'},
+    {type:'quiz',qs:[{q:'What is a beat in music?',o:['A loud sound','The basic pulse of music','A type of note','A piano key'],a:1},{q:'How many beats in 4/4 time?',o:['2','3','4','8'],a:2},{q:'Which beat is usually strongest?',o:['Beat 2','Beat 4','Beat 3','Beat 1'],a:3}]}]},
+  r2:{title:'Tempo: fast & slow',course:'rhythm',steps:[
+    {type:'read',text:'<p><strong>Tempo</strong> is how fast the beats go, measured in <strong>BPM</strong> (beats per minute). 60 BPM = one beat every second. Fast = exciting; slow = calm and peaceful.</p>',vis:'tempo'},
+    {type:'quiz',qs:[{q:'BPM stands for?',o:['Big Piano Music','Beats Per Minute','Bass Plus Melody','Beat Pulse Mode'],a:1},{q:'A slow, relaxing song would have?',o:['180+ BPM','60–80 BPM','120 BPM','No tempo'],a:1}]}]},
+  r3:{title:'Note lengths',course:'rhythm',steps:[
+    {type:'read',text:'<p>Notes have different lengths: <strong>whole note</strong> = 4 beats, <strong>half note</strong> = 2 beats, <strong>quarter note</strong> = 1 beat, <strong>eighth note</strong> = ½ beat. Click each to hear the difference!</p>',vis:'nlens'},
+    {type:'quiz',qs:[{q:'A quarter note lasts?',o:['4 beats','2 beats','1 beat','Half a beat'],a:2},{q:'A whole note lasts?',o:['1 beat','2 beats','4 beats','8 beats'],a:2}]}]},
+  n1:{title:'The musical alphabet',course:'notes',steps:[
+    {type:'read',text:'<p>Music uses just 7 letters: <strong>A B C D E F G</strong>. After G it starts over at A again! Each letter is a different <strong>pitch</strong> — how high or low the note sounds. Click to hear them!</p>',vis:'alpha'},
+    {type:'quiz',qs:[{q:'How many letters in the musical alphabet?',o:['5','6','7','12'],a:2},{q:'What letter comes after G?',o:['H','A again','Z','B'],a:1}]}]},
+  n2:{title:'High & low sounds',course:'notes',steps:[
+    {type:'read',text:'<p>Sound is made by <strong>vibrations</strong>. Fast vibrations = high pitch; slow vibrations = low pitch. We measure frequency in <strong>Hz</strong> (Hertz). The note A4 vibrates at exactly <strong>440 Hz</strong> — it\'s the global tuning standard!</p>',vis:'pitch'},
+    {type:'quiz',qs:[{q:'What makes a high-pitched sound?',o:['Slow vibrations','Fast vibrations','Loud volume','Long duration'],a:1},{q:'A4 vibrates at?',o:['220 Hz','330 Hz','440 Hz','880 Hz'],a:2}]}]},
+  s1:{title:'What is a scale?',course:'scales',steps:[
+    {type:'read',text:'<p>A <strong>scale</strong> is a group of notes that belong together and sound great as a team. The C major scale uses all white keys on a piano: C D E F G A B C. Listen to how it climbs!</p>',vis:'scale'},
+    {type:'quiz',qs:[{q:'A scale is?',o:['One single note','A group of notes that belong together','A type of drum','How loud music is'],a:1}]}]},
+  s2:{title:'Major vs minor',course:'scales',steps:[
+    {type:'read',text:'<p><strong>Major</strong> scales sound bright and happy. <strong>Minor</strong> scales sound darker or more mysterious. Click both and notice how different they feel!</p>',vis:'majmin'},
+    {type:'quiz',qs:[{q:'Which scale sounds "happy"?',o:['Minor scale','Blues scale','Major scale','Chromatic scale'],a:2}]}]},
+  c1:{title:'What is a chord?',course:'chords',steps:[
+    {type:'read',text:'<p>A <strong>chord</strong> is when 3 or more notes play at the same time. The C major chord = C + E + G played together. Chords make music feel full and rich!</p>',vis:'chord'},
+    {type:'quiz',qs:[{q:'Minimum notes for a chord?',o:['1 note','2 notes','3 notes','5 notes'],a:2}]}]},
+  c2:{title:'Major & minor chords',course:'chords',steps:[
+    {type:'read',text:'<p>Major chords sound bright; minor chords sound dark and moody. Change just one note in C major (E → E♭) and it becomes C minor — a completely different feeling!</p>',vis:'chord2'},
+    {type:'quiz',qs:[{q:'A minor chord sounds?',o:['Happy and bright','Energetic','Moody or sad','Exciting'],a:2}]}]},
+};
+const BDGS=[
+  {id:'f',  icon:'⭐',name:'First steps',   desc:'Complete your first lesson',      check:u=>Object.keys(u.ld||{}).length>=1},
+  {id:'r',  icon:'🥁',name:'Rhythm keeper', desc:'Finish all rhythm lessons',       check:u=>['r1','r2','r3'].every(l=>(u.ld||{})[l])},
+  {id:'n',  icon:'🎵',name:'Note spotter',  desc:'Finish all notes lessons',        check:u=>['n1','n2'].every(l=>(u.ld||{})[l])},
+  {id:'s3', icon:'🔥',name:'On fire',       desc:'Achieve a 3-day streak',          check:u=>(u.streak||0)>=3},
+  {id:'q5', icon:'🧠',name:'Quiz whiz',     desc:'Answer 5 questions correctly',    check:u=>(u.qc||0)>=5},
+  {id:'q20',icon:'🎓',name:'Scholar',       desc:'Answer 20 questions correctly',   check:u=>(u.qc||0)>=20},
+  {id:'x1', icon:'💫',name:'100 XP club',   desc:'Earn 100 XP',                     check:u=>(u.xp||0)>=100},
+  {id:'x5', icon:'🌟',name:'500 XP legend', desc:'Earn 500 XP',                     check:u=>(u.xp||0)>=500},
+  {id:'det',icon:'🎤',name:'Note detective',desc:'Use the note detector',            check:u=>u.usedDet},
+  {id:'all',icon:'👑',name:'Grand master',  desc:'Complete all 8 lessons',          check:u=>Object.keys(u.ld||{}).length>=8},
+];
+
+/* ── HELPERS ── */
+function cDone(id){return(CRS.find(c=>c.id===id)?.lessons||[]).filter(l=>(CU.ld||{})[l]).length;}
+function cPct(id){const c=CRS.find(x=>x.id===id);if(!c)return 0;return Math.round(cDone(id)/c.lessons.length*100);}
+function tDone(){let n=0;CRS.forEach(c=>c.lessons.forEach(l=>{if((CU.ld||{})[l])n++;}));return n;}
+function addXP(a){CU.xp=(CU.xp||0)+a;sv(CU.email,CU);uh();}
+function uh(){
+  if(!CU)return;
+  document.getElementById('sbav').textContent=CU.avatar||'🎵';
+  document.getElementById('sbun').textContent=CU.name;
+  document.getElementById('sbulv').textContent='Lv '+(getLv(CU.xp)+1)+' — '+getLvT(CU.xp);
+  document.getElementById('xpf').style.width=getLvP(CU.xp)+'%';
+  document.getElementById('tbxp').textContent=CU.xp;
+  document.getElementById('tbh').textContent=CU.hearts||5;
+  document.getElementById('tbst').textContent=CU.streak||0;
+  document.getElementById('sbstr').textContent=CU.streak||0;
+}
+function bun(){
+  const el=document.getElementById('unav');el.innerHTML='';
+  const cur=CRS.find(c=>c.unlocked&&cPct(c.id)<100)||CRS.find(c=>c.unlocked)||CRS[0];
+  if(!cur)return;
+  cur.lessons.forEach(lid=>{
+    const l=LES[lid];if(!l)return;
+    const done=(CU.ld||{})[lid];
+    const item=document.createElement('div');item.className='si';
+    item.innerHTML=`<div class="clc${done?' d':''}"></div><span class="sil" style="font-size:12px">${l.title}</span>${done?'<span class="sbadge">Done</span>':''}`;
+    item.onclick=()=>openL(lid);
+    el.appendChild(item);
+  });
+}
+
+/* ── NAV ── */
+let CLS={lid:null,step:0,qa:{}};
+function gv(id,el){
+  document.querySelectorAll('.vw').forEach(v=>v.classList.remove('on'));
+  document.querySelectorAll('.si').forEach(s=>s.classList.remove('act'));
+  const ve=document.getElementById('vw-'+id);if(ve)ve.classList.add('on');
+  if(el)el.classList.add('act');else{const n=document.getElementById('nv-'+id);if(n)n.classList.add('act');}
+  const titles={home:'Home',courses:'Courses',lesson:CLS.lid&&LES[CLS.lid]?LES[CLS.lid].title:'Lesson',practice:'Practice',ear:'Ear training',det:'Note detector',stats:'My stats',badges:'Badges'};
+  document.getElementById('appbc').innerHTML=`<b>${titles[id]||id}</b>`;
+  if(id==='home')rHome();else if(id==='courses')rCourses();else if(id==='practice')rPractice();
+  else if(id==='ear')rEar();else if(id==='det')rDet();else if(id==='stats')rStats();else if(id==='badges')rBadges();
+  if(id!=='det')stopDet();
+}
+function launch(){
+  if(!CU)return;
+  const today=new Date().toDateString();
+  if(CU.lastDay!==today){const yd=new Date(Date.now()-86400000).toDateString();CU.streak=CU.lastDay===yd?(CU.streak||0)+1:1;CU.lastDay=today;sv(CU.email,CU);}
+  spg('pg-app');uh();bun();gv('home');
+}
+
+/* ── HOME ── */
+function rHome(){
+  const h=document.getElementById('vw-home');
+  const hr=new Date().getHours();const gr=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+  const nxt=Object.keys(LES).filter(lid=>!(CU.ld||{})[lid]).slice(0,3);
+  h.innerHTML=`
+  <div class="pt">${gr}, ${CU.name}! 👋</div>
+  <div class="ps">Member since ${CU.join||'today'}${(CU.streak||0)>1?' · '+CU.streak+'-day streak 🔥':''}</div>
+  <div class="mg">
+    <div class="mc"><div class="ml">Total XP</div><div class="mv">${CU.xp}</div><div class="ms">Level ${getLv(CU.xp)+1}</div></div>
+    <div class="mc"><div class="ml">Lessons done</div><div class="mv">${tDone()}</div><div class="ms">of ${Object.keys(LES).length}</div></div>
+    <div class="mc"><div class="ml">Day streak</div><div class="mv">${CU.streak||0}</div><div class="ms">days in a row</div></div>
+    <div class="mc"><div class="ml">Badges</div><div class="mv">${BDGS.filter(b=>b.check(CU)).length}</div><div class="ms">of ${BDGS.length}</div></div>
+  </div>
+  <div class="st">Continue learning</div>
+  <div class="cg">${CRS.filter(c=>c.unlocked).map(c=>`
+    <div class="cc" style="--cc-accent:${c.acc}" onclick="openCrs('${c.id}')">
+      <div class="cci">${c.icon}</div><div class="cct">${c.title}</div><div class="ccd">${c.desc}</div>
+      <div class="cpb"><div class="cpf" style="width:${cPct(c.id)}%;background:${c.color}"></div></div>
+      <div class="cm"><span>${cDone(c.id)}/${c.lessons.length} lessons</span><span style="color:${c.color};font-weight:700">${cPct(c.id)}%</span></div>
+    </div>`).join('')}</div>
+  ${nxt.length?`
+  <div class="st">Up next</div>
+  <div class="pnl">${nxt.map(lid=>{const l=LES[lid],c=CRS.find(x=>x.id===l.course);return`<div class="ar"><div class="arico" style="background:${c.bg}">${c.icon}</div><div class="att"><div class="artit">${l.title}</div><div class="ardesc">${c.title}</div></div><button class="btn p" onclick="openL('${lid}')">Start →</button></div>`;}).join('')}</div>`
+  :`<div class="pnl" style="text-align:center;padding:24px"><div style="font-size:34px;margin-bottom:8px">🎉</div><div style="font-size:17px;font-weight:800;margin-bottom:4px">All lessons complete!</div><div style="font-size:13px;color:var(--t2)">Amazing work — check your badges and stats!</div></div>`}
+  <div class="st">🎤 Note detector</div>
+  <div class="pnl" style="display:flex;align-items:center;gap:14px">
+    <div style="font-size:36px">🎤</div>
+    <div class="att"><div class="artit">Sing or play — see your note live!</div><div class="ardesc">Real-time pitch detection using your microphone. Sing a note and watch it appear.</div></div>
+    <button class="btn p" onclick="gv('det',document.getElementById('nv-det'))">Open →</button>
+  </div>`;
+}
+
+/* ── COURSES ── */
+function rCourses(){
+  document.getElementById('vw-courses').innerHTML=`
+  <div class="pt">Courses</div><div class="ps">Complete courses in order to unlock new ones. Each has lessons, quizzes and XP rewards.</div>
+  <div class="cg">${CRS.map(c=>`
+    <div class="cc${c.unlocked?'':' clk'}" style="--cc-accent:${c.acc}" ${c.unlocked?`onclick="openCrs('${c.id}')"`:'style="cursor:default"'}>
+      <div class="cci">${c.icon}${!c.unlocked?' 🔒':''}</div><div class="cct">${c.title}</div><div class="ccd">${c.desc}</div>
+      <div class="cpb"><div class="cpf" style="width:${cPct(c.id)}%;background:${c.color}"></div></div>
+      <div class="cm"><span>${cDone(c.id)}/${c.lessons.length} lessons</span><span>${c.unlocked?cPct(c.id)+'%':'Locked'}</span></div>
+    </div>`).join('')}</div>`;
+}
+function openCrs(cid){const c=CRS.find(x=>x.id===cid);const nx=c.lessons.find(l=>!(CU.ld||{})[l])||c.lessons[0];openL(nx);}
+
+/* ── LESSON ── */
+function openL(lid){if(!LES[lid])return;CLS={lid,step:0,qa:{}};document.querySelectorAll('.si').forEach(s=>s.classList.remove('act'));gv('lesson');rLesson();}
+function rLesson(){
+  const lid=CLS.lid,lesson=LES[lid],step=lesson.steps[CLS.step];
+  const c=CRS.find(x=>x.id===lesson.course);
+  const dots=lesson.steps.map((_,i)=>`<div class="sd${i<CLS.step?' dn':i===CLS.step?' cur':''}" onclick="gs(${i})">${i+1}</div>${i<lesson.steps.length-1?'<div class="sln"></div>':''}`).join('');
+  const cl=lesson.steps.map((s,i)=>`<div class="cli${i<CLS.step?' d':''}"><div class="clc${i<CLS.step?' d':''}"></div>${s.type==='read'?'Read & explore':'Knowledge quiz'}</div>`).join('');
+  let main='';
+  if(step.type==='read'){
+    main=`<div class="lcard"><div class="sdots">${dots}</div><div class="leye" style="color:${c.color}">${c.title}</div>
+    <div class="lh">${lesson.title}</div><div class="lb">${step.text}</div>
+    ${bvis(step.vis,c.color,c.bg)}
+    <div class="br"><button class="btn" onclick="gs(${CLS.step-1})" ${CLS.step===0?'disabled':''}>← Back</button><button class="btn p" onclick="gs(${CLS.step+1})">Continue →</button></div></div>`;
+  }else{
+    const allA=step.qs.every((_,i)=>CLS.qa[i]!==undefined);
+    const cor=step.qs.filter((_,i)=>CLS.qa[i]===true).length;
+    main=`<div class="lcard"><div class="sdots">${dots}</div><div class="leye" style="color:${c.color}">Knowledge check</div>
+    <div class="lh">Quiz: ${lesson.title}</div>
+    <div style="font-size:13px;color:var(--t2);margin-bottom:16px;font-weight:500">Answer all questions to complete this lesson.</div>
+    ${step.qs.map((q,qi)=>{const a=CLS.qa[qi];return`<div class="qcard"><div class="qnum">Question ${qi+1} of ${step.qs.length}</div><div class="qq">${q.q}</div>
+    <div class="qopts">${q.o.map((o,oi)=>`<button class="qo${a!==undefined?(oi===q.a?' c':(oi===a?' w':'')):''}${a!==undefined?' disabled':''}" onclick="aq(${qi},${oi},${q.a})" ${a!==undefined?'disabled':''}>${o}</button>`).join('')}</div>
+    <div class="qfb">${a===undefined?'':(a===q.a?'✓ Correct! +10 XP':'✗ Not quite — see the highlighted answer.')}</div></div>`;}).join('')}
+    ${allA?`<div class="dbanner"><div class="dbh">Quiz complete! ${cor}/${step.qs.length} correct 🎉</div><div class="dbs">You earned ${cor*10} XP from this quiz</div>
+    <div class="br" style="justify-content:center"><button class="btn g" onclick="finL()">Finish lesson +20 XP →</button></div></div>`:''}
+    </div>`;
+  }
+  document.getElementById('vw-lesson').innerHTML=`<div class="llay"><div>${main}</div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div class="pnl"><div class="pnh">Lesson steps</div>${cl}</div>
+    <div class="pnl"><div class="pnh">Your XP</div><div style="font-size:22px;font-weight:800;letter-spacing:-.5px">${CU.xp}</div>
+    <div style="font-size:12px;color:var(--t3);font-weight:600">Level ${getLv(CU.xp)+1} — ${getLvT(CU.xp)}</div>
+    <div class="xpb" style="margin-top:7px"><div class="xpf" style="width:${getLvP(CU.xp)}%"></div></div></div>
+    <div class="pnl"><div class="pnh">💡 Tip</div><div style="font-size:13px;color:var(--t2);line-height:1.65;font-weight:500">${{rhythm:'Tap your foot to feel the beat while you listen!',notes:'Sing "do re mi fa sol la ti" to remember the scale.',scales:'Hum a major scale — notice how it feels "complete" at the end.',chords:'Three-note chords are called triads!'}[c.id]||'Great work — keep going!'}</div></div>
+  </div></div>`;
+}
+function gs(i){const l=LES[CLS.lid];if(i<0||i>=l.steps.length)return;CLS.step=i;CLS.qa={};rLesson();}
+function aq(qi,ch,cor){if(CLS.qa[qi]!==undefined)return;const ok=ch===cor;CLS.qa[qi]=ok;if(ok){addXP(10);CU.qc=(CU.qc||0)+1;}CU.qt=(CU.qt||0)+1;sv(CU.email,CU);rLesson();}
+function finL(){if(!CU.ld)CU.ld={};CU.ld[CLS.lid]=true;addXP(20);sv(CU.email,CU);bun();const c=CRS.find(x=>x.id===LES[CLS.lid].course);if(c){const nx=c.lessons.find(l=>!CU.ld[l]);if(nx){openL(nx);return;}}gv('courses');}
+
+/* ── LESSON VISUALS ── */
+function bvis(type,col,bg){
+  if(!type)return'';
+  const S=`<div class="iz" style="background:${bg}">`,E='</div>';
+  const bs=`style="border-color:${col};color:${col};background:rgba(255,255,255,.9)"`;
+  if(type==='metro')return S+`<div style="font-size:12px;font-weight:700;color:${col};margin-bottom:10px">Click any beat to feel it! 👇</div>
+  <div style="display:flex;gap:8px;margin-bottom:12px">${[1,2,3,4].map(i=>`<div style="width:52px;height:52px;border-radius:10px;background:${i===1?col:'rgba(255,255,255,.9)'};border:2px solid ${col};display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:${i===1?'white':col};cursor:pointer;transition:transform .1s;box-shadow:0 2px 8px ${col}44" onmousedown="this.style.transform='scale(.92)'" onmouseup="this.style.transform=''" onmouseleave="this.style.transform=''" onclick="tone(${i===1?880:660},0.1,'square')">${i}</div>`).join('')}</div>
+  <button class="btn" ${bs} onclick="playMet()">▶ Play metronome</button>`+E;
+  if(type==='tempo')return S+`<div style="font-size:12px;font-weight:700;color:${col};margin-bottom:10px">Click a tempo to hear it</div>
+  <div style="display:flex;gap:7px;flex-wrap:wrap">${[{l:'Slow (60 BPM)',v:60},{l:'Medium (100)',v:100},{l:'Fast (140)',v:140},{l:'Very fast (180)',v:180}].map(t=>`<button class="btn" ${bs} onclick="playT(${t.v})">${t.l}</button>`).join('')}</div>`+E;
+  if(type==='nlens')return S+`<div style="font-size:12px;font-weight:700;color:${col};margin-bottom:10px">Click to hear each note length</div>
+  <div style="display:flex;gap:7px;flex-wrap:wrap">${[{l:'Whole (4 beats)',d:2},{l:'Half (2 beats)',d:1.2},{l:'Quarter (1 beat)',d:0.6},{l:'Eighth (½ beat)',d:0.3}].map(n=>`<button class="btn" ${bs} onclick="tone(392,${n.d})">${n.l}</button>`).join('')}</div>`+E;
+  if(type==='alpha')return S+`<div style="font-size:12px;font-weight:700;color:${col};margin-bottom:10px">Click each note to hear it</div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap">${[['C',261.63],['D',293.66],['E',329.63],['F',349.23],['G',392],['A',440],['B',493.88],["C'",523.25]].map(([n,f])=>`<button class="btn" ${bs} style="border-color:${col};color:${col};background:rgba(255,255,255,.9);min-width:38px" onclick="tone(${f},0.6)">${n}</button>`).join('')}</div>`+E;
+  if(type==='pitch')return S+`<div style="font-size:12px;font-weight:700;color:${col};margin-bottom:10px">Click a bar — higher bar = higher pitch!</div>
+  <div style="display:flex;flex-direction:column-reverse;gap:5px">${[['C4',261.63],['E4',329.63],['A4',440],['C5',523.25]].map(([n,f],i)=>`
+  <div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:${col};width:24px;font-weight:800">${n}</span>
+  <div style="flex:1;height:22px;background:rgba(255,255,255,.8);border-radius:5px;cursor:pointer;overflow:hidden;border:1.5px solid ${col}44" onclick="tone(${f},0.7)">
+  <div style="height:100%;width:${28+(i+1)*16}%;background:${col};opacity:${0.5+i*.15};display:flex;align-items:center;padding-left:8px">
+  <span style="font-size:10px;color:white;font-weight:700">${Math.round(f)} Hz</span></div></div></div>`).join('')}</div>`+E;
+  if(type==='scale')return S+`<div style="font-size:12px;font-weight:700;color:${col};margin-bottom:10px">Hear the C major scale climb up!</div>
+  <button class="btn" ${bs} onclick="[261.63,293.66,329.63,349.23,392,440,493.88,523.25].forEach((f,i)=>setTimeout(()=>tone(f,0.45),i*220))">▶ Play C major scale</button>`+E;
+  if(type==='majmin')return S+`<div style="font-size:12px;font-weight:700;color:${col};margin-bottom:10px">Hear how different they feel!</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+  <button class="btn" ${bs} onclick="[261.63,293.66,329.63,349.23,392,440,493.88,523.25].forEach((f,i)=>setTimeout(()=>tone(f,0.45),i*220))">▶ C major — happy</button>
+  <button class="btn" ${bs} onclick="[220,246.94,261.63,293.66,329.63,349.23,392,440].forEach((f,i)=>setTimeout(()=>tone(f,0.45),i*220))">▶ A minor — mysterious</button></div>`+E;
+  if(type==='chord')return S+`<div style="font-size:12px;font-weight:700;color:${col};margin-bottom:10px">C + E + G together = C major chord!</div>
+  <button class="btn" ${bs} onclick="[261.63,329.63,392].forEach(f=>tone(f,1.6))">▶ Play C major chord</button>`+E;
+  if(type==='chord2')return S+`<div style="font-size:12px;font-weight:700;color:${col};margin-bottom:10px">Change one note — totally different mood!</div>
+  <div style="display:flex;gap:8px">
+  <button class="btn" ${bs} onclick="[261.63,329.63,392].forEach(f=>tone(f,1.5))">▶ C major — bright</button>
+  <button class="btn" ${bs} onclick="[261.63,311.13,392].forEach(f=>tone(f,1.5))">▶ C minor — moody</button></div>`+E;
+  return'';
+}
+let mI=null;function playMet(){clearInterval(mI);let s=0;mI=setInterval(()=>{tone(s%4===0?880:660,0.08,'square');s++;if(s>=8)clearInterval(mI);},500);}
+let tI=null;function playT(bpm){clearInterval(tI);let s=0;tI=setInterval(()=>{tone(s%4===0?880:660,0.08,'square');s++;if(s>=8)clearInterval(tI);},Math.round(60000/bpm));}
+
+/* ── PRACTICE ── */
+const WKS=['C4','D4','E4','F4','G4','A4','B4','C5','D5','E5'];
+const BKS={1:'C#4',3:'D#4',6:'F#4',8:'G#4',10:'A#4'};
+const NFQ={C4:261.63,'C#4':277.18,D4:293.66,'D#4':311.13,E4:329.63,F4:349.23,'F#4':369.99,G4:392,'G#4':415.3,A4:440,'A#4':466.16,B4:493.88,C5:523.25,D5:587.33,E5:659.25};
+const SCM={major:[0,2,4,5,7,9,11],minor:[9,11,0,2,4,5,7],penta:[0,2,4,7,9]};
+const NSM={C4:0,D4:2,E4:4,F4:5,G4:7,A4:9,B4:11,C5:0,D5:2,E5:4};
+let rBts=Array(16).fill(false);rBts[0]=rBts[4]=rBts[8]=rBts[12]=true;
+let rPl=false,rIv=null,rSt=0;
+function rPractice(){
+  document.getElementById('vw-practice').innerHTML=`
+  <div class="pt">Practice</div><div class="ps">Freestyle — no pressure, just explore and play!</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="pnl"><div class="pnh">Mini keyboard</div>
+      <div class="pks" id="pks"></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="btn" onclick="hlSc('major')">C major</button>
+        <button class="btn" onclick="hlSc('minor')">A minor</button>
+        <button class="btn" onclick="hlSc('penta')">Pentatonic</button>
+        <button class="btn" onclick="hlSc('none')">Clear</button>
+      </div>
+      <div style="font-size:12px;color:var(--t2);font-weight:500" id="sci">Click any key to play it!</div>
+    </div>
+    <div class="pnl"><div class="pnh">Rhythm builder</div>
+      <div class="rg" id="rg"></div>
+      <div style="display:flex;gap:7px;margin-top:10px">
+        <button class="btn p" id="rplbtn" onclick="togR()">▶ Play</button>
+        <button class="btn" onclick="clrR()">Clear</button>
+        <button class="btn" onclick="rndR()">Random</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
+        <span style="font-size:12px;color:var(--t2);font-weight:600">BPM</span>
+        <input type="range" min="60" max="180" value="100" step="1" id="bpmi" oninput="document.getElementById('bpmd').textContent=this.value" style="flex:1;accent-color:var(--p)">
+        <span style="font-size:13px;font-weight:800;min-width:28px" id="bpmd">100</span>
+      </div>
+    </div>
+  </div>`;
+  bldK();bldR();
+}
+function bldK(){const w=document.getElementById('pks');if(!w)return;w.innerHTML='';WKS.forEach((n,i)=>{if(BKS[i]){const bk=document.createElement('div');bk.className='pk b';bk.dataset.note=BKS[i];bk.onmousedown=()=>{tone(NFQ[BKS[i]]||440,0.6);bk.classList.add('lit');};bk.onmouseup=bk.onmouseleave=()=>bk.classList.remove('lit');w.appendChild(bk);}const k=document.createElement('div');k.className='pk w';k.dataset.note=n;k.textContent=n.replace(/\d/,'');k.onmousedown=()=>{tone(NFQ[n]||440,0.6);k.classList.add('lit');};k.onmouseup=k.onmouseleave=()=>k.classList.remove('lit');w.appendChild(k);});}
+function hlSc(sc){document.querySelectorAll('.pk.w').forEach(k=>{const s=NSM[k.dataset.note];const inS=sc==='none'?false:(SCM[sc]||[]).map(x=>x%12).includes((s||0)%12);k.style.background=inS?'var(--pl)':'';k.style.borderColor=inS?'var(--p)':'';k.style.color=inS?'var(--pd)':'';});const lbs={major:'C major: C D E F G A B — bright and happy!',minor:'A minor: A B C D E F G — mysterious and deep.',penta:'Pentatonic: C D E G A — always sounds great!',none:'All keys — play anything!'};const el=document.getElementById('sci');if(el)el.textContent=lbs[sc]||'';}
+function bldR(){const g=document.getElementById('rg');if(!g)return;g.innerHTML='';rBts.forEach((on,i)=>{const b=document.createElement('div');b.className='rb'+(on?' on':'')+(i%4===0?' ac':'');b.id='rb'+i;b.textContent=i%4===0?Math.floor(i/4)+1:'';b.onclick=()=>{rBts[i]=!rBts[i];b.className='rb'+(rBts[i]?' on':'')+(i%4===0?' ac':'');b.textContent=i%4===0?Math.floor(i/4)+1:'';};g.appendChild(b);});}
+function togR(){if(rPl){stopRhy();return;}rPl=true;rSt=0;const btn=document.getElementById('rplbtn');if(btn)btn.textContent='⏹ Stop';const bpm=parseInt(document.getElementById('bpmi')?.value||100);rIv=setInterval(()=>{document.querySelectorAll('.rb.pl').forEach(e=>e.classList.remove('pl'));const el=document.getElementById('rb'+rSt);if(el)el.classList.add('pl');if(rBts[rSt])tone(rSt%4===0?200:160,0.08,'square');rSt=(rSt+1)%16;},Math.round(60000/bpm/4));}
+function stopRhy(){rPl=false;clearInterval(rIv);document.querySelectorAll('.rb.pl').forEach(e=>e.classList.remove('pl'));const btn=document.getElementById('rplbtn');if(btn)btn.textContent='▶ Play';}
+function clrR(){stopRhy();rBts=Array(16).fill(false);bldR();}
+function rndR(){stopRhy();rBts=Array(16).fill(0).map((_,i)=>i%4===0||Math.random()>0.58);bldR();}
+
+/* ── EAR TRAINING ── */
+const EXS=[
+  {title:'High or low?',desc:'Listen to the note — is it HIGH or LOW?',play:()=>{const h=Math.random()>0.5;tone(h?523.25:261.63,0.8);return h?'high':'low';},opts:['High','Low'],chk:(a,t)=>a.toLowerCase()===t},
+  {title:'Going up or down?',desc:'Listen to the melody — does it go UP or DOWN?',play:()=>{const u=Math.random()>0.5;(u?[261.63,329.63,392]:[392,329.63,261.63]).forEach((f,i)=>setTimeout(()=>tone(f,0.4),i*320));return u?'up':'down';},opts:['Going up','Going down'],chk:(a,t)=>a.toLowerCase().includes(t)},
+  {title:'Same or different?',desc:'Are these two notes the SAME or DIFFERENT?',play:()=>{const s=Math.random()>0.5;tone(392,0.5);setTimeout(()=>tone(s?392:440,0.5),750);return s?'same':'different';},opts:['Same','Different'],chk:(a,t)=>a.toLowerCase()===t},
+  {title:'Count the notes',desc:'How many notes do you hear?',play:()=>{const n=2+Math.floor(Math.random()*3);[261.63,329.63,392,440,523.25].slice(0,n).forEach((f,i)=>setTimeout(()=>tone(f,0.4),i*420));return String(n);},opts:['2 notes','3 notes','4 notes'],chk:(a,t)=>a.charAt(0)===t},
+  {title:'Major or minor?',desc:'Listen to the chord — is it MAJOR (happy) or MINOR (sad)?',play:()=>{const m=Math.random()>0.5;if(m)[261.63,329.63,392].forEach(f=>tone(f,1.2));else[261.63,311.13,392].forEach(f=>tone(f,1.2));return m?'major':'minor';},opts:['Major (happy)','Minor (sad)'],chk:(a,t)=>a.toLowerCase().startsWith(t)},
+  {title:'Fast or slow?',desc:'Listen to the rhythm — is it FAST or SLOW?',play:()=>{const f=Math.random()>0.5;const bpm=f?160:60;let s=0;const iv=setInterval(()=>{tone(s%4===0?880:660,0.08,'square');s++;if(s>=8)clearInterval(iv);},Math.round(60000/bpm));return f?'fast':'slow';},opts:['Fast','Slow'],chk:(a,t)=>a.toLowerCase()===t},
+];
+const ET={},ED={};
+function rEar(){
+  document.getElementById('vw-ear').innerHTML=`
+  <div class="pt">Ear training</div><div class="ps">Listen carefully and identify the sounds. Earn +10 XP for every correct answer!</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+  ${EXS.map((ex,ei)=>`<div class="pnl"><div class="pnh">${ex.title}</div>
+    <div style="font-size:13px;color:var(--t2);margin-bottom:12px;line-height:1.6;font-weight:500">${ex.desc}</div>
+    <button class="eo" onclick="playE(${ei})" style="margin-bottom:10px"><div class="plic"></div><span style="font-weight:700">Play sound</span></button>
+    <div id="eo${ei}">${ex.opts.map(o=>`<button class="eo" onclick="ansE(${ei},'${o}',this)">${o}</button>`).join('')}</div>
+    <div style="font-size:13px;color:var(--t2);margin-top:7px;min-height:18px;font-weight:600" id="ef${ei}"></div>
+  </div>`).join('')}</div>`;
+}
+function playE(ei){ET[ei]=EXS[ei].play();ED[ei]=false;document.querySelectorAll(`#eo${ei} button`).forEach(b=>{b.className='eo';b.disabled=false;});const f=document.getElementById('ef'+ei);if(f)f.textContent='Now pick your answer!';}
+function ansE(ei,ans,el){if(!ET[ei]){const f=document.getElementById('ef'+ei);if(f)f.textContent='Press Play first!';return;}if(ED[ei])return;ED[ei]=true;const ok=EXS[ei].chk(ans,ET[ei]);el.className='eo '+(ok?'c':'w');document.querySelectorAll(`#eo${ei} button`).forEach(b=>b.disabled=true);if(ok)addXP(10);const f=document.getElementById('ef'+ei);if(f)f.textContent=ok?'✓ Correct! +10 XP':'✗ Not quite. Hit Play and try again!';}
+
+/* ── STATS ── */
+function rStats(){
+  const acc=CU.qt?Math.round(CU.qc/CU.qt*100):0;
+  document.getElementById('vw-stats').innerHTML=`
+  <div class="pt">My stats</div><div class="ps">Track your learning progress across all courses.</div>
+  <div class="mg">
+    <div class="mc"><div class="ml">Total XP</div><div class="mv">${CU.xp}</div><div class="ms">Level ${getLv(CU.xp)+1}</div></div>
+    <div class="mc"><div class="ml">Lessons done</div><div class="mv">${tDone()}</div><div class="ms">of ${Object.keys(LES).length}</div></div>
+    <div class="mc"><div class="ml">Quiz accuracy</div><div class="mv">${acc}%</div><div class="ms">${CU.qt||0} questions</div></div>
+    <div class="mc"><div class="ml">Day streak</div><div class="mv">${CU.streak||0}</div><div class="ms">days in a row</div></div>
+  </div>
+  <div class="pnl"><div class="pnh">Course progress</div>
+  ${CRS.map(c=>`<div style="margin-bottom:13px"><div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:5px"><span style="font-weight:700">${c.icon} ${c.title}</span><span style="color:var(--t3);font-weight:700">${cDone(c.id)}/${c.lessons.length} lessons · ${cPct(c.id)}%</span></div>
+  <div class="pbw"><div class="pbf" style="width:${cPct(c.id)}%;background:${c.color}"></div></div></div>`).join('')}</div>
+  <div class="pnl"><div class="pnh">Level progress</div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="font-size:30px;font-weight:800">${getLv(CU.xp)+1}</div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:700;margin-bottom:5px">${getLvT(CU.xp)}</div>
+        <div class="xpb" style="height:8px"><div class="xpf" style="width:${getLvP(CU.xp)}%"></div></div>
+        <div style="font-size:11px;color:var(--t3);margin-top:5px;font-weight:600">${CU.xp} XP · Next level at ${LVS[getLv(CU.xp)+1]?LVS[getLv(CU.xp)+1].m+' XP':'Max level reached!'}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── BADGES ── */
+function rBadges(){
+  const earned=BDGS.filter(b=>b.check(CU)),locked=BDGS.filter(b=>!b.check(CU));
+  document.getElementById('vw-badges').innerHTML=`
+  <div class="pt">Badges & achievements</div><div class="ps">${earned.length} of ${BDGS.length} badges earned. Keep learning to unlock them all!</div>
+  <div class="st">Earned (${earned.length})</div>
+  <div class="bgg" style="margin-bottom:18px">${earned.length?earned.map(b=>`<div class="bgc"><div class="bgi">${b.icon}</div><div class="bgn">${b.name}</div><div class="bgd">${b.desc}</div><span class="bgt" style="background:var(--gl);color:var(--gd)">Earned ✓</span></div>`).join(''):'<div style="font-size:13px;color:var(--t3);padding:8px 0;font-weight:500">Complete lessons to earn your first badge!</div>'}</div>
+  <div class="st">Locked (${locked.length})</div>
+  <div class="bgg">${locked.map(b=>`<div class="bgc" style="opacity:.4;filter:grayscale(.5)"><div class="bgi">${b.icon}</div><div class="bgn">${b.name}</div><div class="bgd">${b.desc}</div><span class="bgt" style="background:var(--s3);color:var(--t3)">Locked</span></div>`).join('')}</div>`;
+}
+
+/* ── NOTE DETECTOR ── */
+const NC=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const NCOL={C:'#6C63FF',D:'#16A34A',E:'#EA580C',F:'#D97706',G:'#DB2777',A:'#2563EB',B:'#7C3AED','C#':'#8B5CF6','D#':'#059669','F#':'#F59E0B','G#':'#EC4899','A#':'#3B82F6'};
+const NEX={C:'C is the home base of music! Middle C (C4) is the most important note on the piano. The musical scale starts here!',D:'D is the 2nd note of the scale — it sounds bright and curious.',E:'E gives major chords their happy, bright quality!',F:'F has a warm, gentle sound and marks the upper half of the scale.',G:'G is the 5th note — one of the most stable and powerful notes in all of music.',A:'A4 at 440 Hz is the global tuning standard. Every musician in the world tunes to this note!',B:'B leads right back to C — it has a tense, forward-moving energy.','C#':'C# (C sharp) sits between C and D. It adds an exotic, slightly edgy flavor.','D#':'D# (Eb) has a rich, jazzy quality. Very popular in blues and soul music!','F#':'F# is very common in uplifting pop and folk songs.','G#':'G# (Ab) has a dark, lush quality found in lots of romantic music.','A#':'A# (Bb) is a staple of jazz and blues. Warm and deeply soulful!'};
+const DKL=[{n:'C',w:1},{n:'C#',w:0},{n:'D',w:1},{n:'D#',w:0},{n:'E',w:1},{n:'F',w:1},{n:'F#',w:0},{n:'G',w:1},{n:'G#',w:0},{n:'A',w:1},{n:'A#',w:0},{n:'B',w:1},{n:'C',w:1},{n:'C#',w:0},{n:'D',w:1},{n:'D#',w:0},{n:'E',w:1},{n:'F',w:1},{n:'F#',w:0},{n:'G',w:1},{n:'G#',w:0},{n:'A',w:1},{n:'A#',w:0},{n:'B',w:1}];
+let mStr=null,mCtx=null,mAn=null,mSrc=null,detOn=false,detRaf=null,lastN='',holdC=0,nHist=[];
+let wfC=null,wfX=null;
+function f2n(f){if(f<50||f>2500)return null;const sm=12*Math.log2(f/440),midi=Math.round(sm)+69,oct=Math.floor(midi/12)-1,ni=((midi%12)+12)%12,cts=Math.round((sm-Math.round(sm))*100);return{name:NC[ni],octave:oct,cents:cts,freq:Math.round(f*10)/10};}
+function autocorr(buf,sr){let rms=0;for(let i=0;i<buf.length;i++)rms+=buf[i]*buf[i];rms=Math.sqrt(rms/buf.length);if(rms<0.006)return-1;let r1=0,r2=buf.length-1;const th=0.2;for(let i=0;i<buf.length/2;i++){if(Math.abs(buf[i])<th){r1=i;break;}}for(let i=1;i<buf.length/2;i++){if(Math.abs(buf[buf.length-i])<th){r2=buf.length-i;break;}}buf=buf.slice(r1,r2);const L=buf.length;if(L<2)return-1;const c=new Array(L).fill(0);for(let i=0;i<L;i++)for(let j=0;j<L-i;j++)c[i]+=buf[j]*buf[j+i];let d=0;while(d<L-1&&c[d]>c[d+1])d++;let mx=-1,mp=d;for(let i=d;i<L;i++){if(c[i]>mx){mx=c[i];mp=i;}}if(mp<1||mp>=L-1||mx<0)return sr/(mp||1);const x1=c[mp-1],x2=c[mp],x3=c[mp+1],a=(x1+x3-2*x2)/2,b=(x3-x1)/2;let T0=mp;if(a)T0=mp-b/(2*a);return T0>0?sr/T0:-1;}
+function stopDet(){detOn=false;cancelAnimationFrame(detRaf);if(mSrc)try{mSrc.disconnect();}catch(e){}if(mStr)mStr.getTracks().forEach(t=>t.stop());if(mCtx&&mCtx.state!=='closed')try{mCtx.close();}catch(e){}mStr=mCtx=mAn=mSrc=null;wfC=null;wfX=null;const btn=document.getElementById('detbtn');if(btn){btn.className='btn p';btn.textContent='🎤 Start listening';}const sd=document.getElementById('sdot');if(sd)sd.className='sdot';const st=document.getElementById('stxt');if(st)st.textContent=' Not listening';}
+async function startDet(){
+  const eb=document.getElementById('deterr');if(eb)eb.style.display='none';
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){if(eb){eb.style.display='block';eb.textContent='Your browser does not support microphone access. Please use Chrome, Edge, or Firefox.';}return;}
+  try{
+    mStr=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:false,autoGainControl:false,sampleRate:44100},video:false});
+    mCtx=new(window.AudioContext||window.webkitAudioContext)();await mCtx.resume();
+    mAn=mCtx.createAnalyser();mAn.fftSize=8192;mAn.smoothingTimeConstant=0.7;
+    mSrc=mCtx.createMediaStreamSource(mStr);mSrc.connect(mAn);
+    detOn=true;wfC=null;wfX=null;
+    if(!CU.usedDet){CU.usedDet=true;sv(CU.email,CU);}
+    const btn=document.getElementById('detbtn');if(btn){btn.className='btn r';btn.textContent='⏹ Stop listening';}
+    const sd=document.getElementById('sdot');if(sd)sd.className='sdot on';
+    const st=document.getElementById('stxt');if(st)st.textContent=' Listening — sing or play!';
+    detLoop();
+  }catch(e){
+    if(eb){eb.style.display='block';
+    if(e.name==='NotAllowedError'||e.name==='PermissionDeniedError'){
+      eb.innerHTML='<strong>Microphone blocked.</strong> To fix:<br>1. Click the 🔒 lock icon in your browser\'s address bar<br>2. Change Microphone to "Allow"<br>3. Refresh the page and try again';}
+    else if(e.name==='NotFoundError'){eb.textContent='No microphone found. Please plug in a microphone and try again.';}
+    else{eb.textContent='Could not access microphone: '+e.message;}}
+  }
+}
+function togDet(){if(detOn)stopDet();else startDet();}
+function detLoop(){
+  if(!detOn||!mAn)return;detRaf=requestAnimationFrame(detLoop);
+  const buf=new Float32Array(mAn.fftSize),bbuf=new Uint8Array(mAn.fftSize);
+  mAn.getFloatTimeDomainData(buf);mAn.getByteTimeDomainData(bbuf);
+  let rms=0;for(let i=0;i<buf.length;i++)rms+=buf[i]*buf[i];rms=Math.sqrt(rms/buf.length);
+  const vp=Math.min(100,Math.round(rms*500));const vf=document.getElementById('volf');if(vf)vf.style.width=vp+'%';
+  drawWF(bbuf);
+  const freq=autocorr(buf,mCtx.sampleRate);
+  if(freq===-1||rms<0.006){holdC=Math.max(0,holdC-1);if(!holdC&&lastN){clrNote();lastN='';}return;}
+  const det=f2n(freq);if(!det)return;
+  holdC=6;const col=NCOL[det.name]||'var(--p)';
+  const ring=document.getElementById('nr');if(ring){ring.style.borderColor=col;ring.style.background=col+'15';}
+  const nb=document.getElementById('nbig');if(nb){nb.textContent=det.name;nb.style.color=col;}
+  const no=document.getElementById('noct');if(no)no.textContent=det.octave;
+  const fn=document.getElementById('nfn');if(fn)fn.textContent=det.name+det.octave+' — '+Math.round(det.freq)+' Hz';
+  const ac=Math.abs(det.cents),nc=ac<=5?'var(--g)':ac<=15?'var(--a)':'var(--r)',nt=ac<=5?'✓ In tune!':((det.cents<0?'♭ Flat ':'♯ Sharp ')+ac+'¢');
+  const cd=document.getElementById('cdisp');if(cd){cd.textContent=nt;cd.style.color=nc;}
+  const nd=document.getElementById('tneedle');if(nd){nd.style.left=Math.max(5,Math.min(95,50+(det.cents/50)*45))+'%';nd.style.background=nc;}
+  const i1=document.getElementById('di1');if(i1)i1.textContent=det.name+det.octave;
+  const i2=document.getElementById('di2');if(i2)i2.textContent=det.freq;
+  const i3=document.getElementById('di3');if(i3)i3.textContent=(det.cents>=0?'+':'')+det.cents+'¢';
+  hlDK(det.name);
+  if(det.name!==lastN){lastN=det.name;nHist.unshift(det.name+det.octave);if(nHist.length>12)nHist.pop();renderNH();
+    const ep=document.getElementById('expnl');
+    if(ep)ep.innerHTML=`<div style="font-size:14px;font-weight:800;color:${col};margin-bottom:6px;letter-spacing:-.3px">${det.name}${det.octave} — ${Math.round(det.freq)} Hz</div>
+    <div style="font-size:13px;color:var(--t2);line-height:1.7;font-weight:500">${NEX[det.name]||'A musical note!'}</div>
+    <div style="margin-top:8px;font-size:12px;color:var(--t3);font-weight:600">Octave ${det.octave}: the same note one octave up vibrates at exactly double the frequency.</div>`;}
+}
+function clrNote(){const nb=document.getElementById('nbig');if(nb){nb.textContent='—';nb.style.color='var(--t1)';}const no=document.getElementById('noct');if(no)no.textContent='';const fn=document.getElementById('nfn');if(fn)fn.textContent='';const cd=document.getElementById('cdisp');if(cd)cd.textContent='';const ring=document.getElementById('nr');if(ring){ring.style.borderColor='var(--br)';ring.style.background='var(--s2)';}const nd=document.getElementById('tneedle');if(nd)nd.style.left='50%';hlDK(null);}
+function hlDK(n){document.querySelectorAll('.dkey').forEach(k=>k.classList.remove('lit'));if(!n)return;document.querySelectorAll(`.dkey[data-n="${n}"]`).forEach(k=>k.classList.add('lit'));}
+function drawWF(buf){if(!wfC){wfC=document.getElementById('wfc');if(!wfC)return;}if(!wfX)wfX=wfC.getContext('2d');const W=wfC.clientWidth||300,H=52;wfC.width=W;wfX.clearRect(0,0,W,H);wfX.strokeStyle='#6C63FF';wfX.lineWidth=1.5;wfX.beginPath();const sl=W/buf.length;let x=0;for(let i=0;i<buf.length;i++){const v=buf[i]/128-1;const y=v*(H/2-3)+H/2;i===0?wfX.moveTo(x,y):wfX.lineTo(x,y);x+=sl;}wfX.stroke();}
+function renderNH(){const el=document.getElementById('nhist');if(!el)return;if(!nHist.length){el.innerHTML='<span style="font-size:13px;color:var(--t3);font-weight:500">Notes you sing will appear here…</span>';return;}el.innerHTML=nHist.map(n=>{const b=n.replace(/\d/,'');const col=NCOL[b]||'var(--p)';return`<span class="npill" style="background:${col}18;border:1.5px solid ${col};color:${col}">${n}</span>`;}).join('');}
+function rDet(){
+  wfC=null;wfX=null;lastN='';holdC=0;nHist=[];
+  let kh='';
+  DKL.forEach((k,i)=>{const freq=NFQ[k.n+'4']||440;const w=k.w?'26px':'16px',h=k.w?'58px':'36px',bg=k.w?'white':'#1A1A1A',cl=k.w?'#999':'#666',br=k.w?'1px solid rgba(0,0,0,.15)':'1px solid rgba(0,0,0,.4)';kh+=`<div class="dkey" data-n="${k.n}" style="width:${w};height:${h};border:${br};background:${bg};color:${cl};font-size:8px;font-weight:800;border-radius:0 0 4px 4px;${!k.w?'margin:0 -8px;z-index:2;position:relative;':''}" onclick="tone(${freq},0.45)">${k.w&&i<12?k.n:''}</div>`;});
+  document.getElementById('vw-det').innerHTML=`
+  <div class="pt">Note detector 🎤</div>
+  <div class="ps">Sing, hum, or play any instrument near your microphone — the note name appears in real time!</div>
+  <div id="deterr" class="mwarn"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div>
+      <div class="pnl" style="text-align:center">
+        <div class="pnh" style="text-align:left">Detected note</div>
+        <div class="nr" id="nr"><div class="nbig" id="nbig">—</div><div class="noct" id="noct"></div></div>
+        <div id="nfn" style="font-size:14px;color:var(--t2);min-height:20px;margin-bottom:8px;font-weight:700"></div>
+        <div class="tls">-50¢ &nbsp;&nbsp; -25¢ &nbsp;&nbsp; in tune &nbsp;&nbsp; +25¢ &nbsp;&nbsp; +50¢</div>
+        <div class="tbar"><div class="tc"></div><div class="tn" id="tneedle"></div></div>
+        <div id="cdisp" style="font-size:14px;font-weight:800;min-height:20px;margin-bottom:12px"></div>
+        <div style="display:flex;justify-content:center;margin-bottom:12px"><button class="btn p" id="detbtn" onclick="togDet()">🎤 Start listening</button></div>
+        <div style="display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--t2);font-weight:600"><span class="sdot" id="sdot"></span><span id="stxt"> Not listening</span></div>
+        <div class="vbar"><div class="vf" id="volf"></div></div>
+        <div style="background:var(--s2);border-radius:8px;overflow:hidden;margin-top:10px;border:1px solid var(--br)"><canvas id="wfc" height="52" style="display:block;width:100%"></canvas></div>
+        <div style="font-size:12px;color:var(--t3);margin-top:10px;line-height:1.5;font-weight:500;text-align:left">💡 <strong>Tip:</strong> Hum or sing a steady, sustained note for best results. If blocked, click the 🔒 icon in your browser address bar → allow microphone → refresh.</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="pnl">
+        <div class="pnh">Live info</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+          <div class="ic"><div class="icl">Note</div><div class="icv" id="di1">—</div></div>
+          <div class="ic"><div class="icl">Frequency</div><div class="icv" id="di2" style="font-size:16px">—</div><div class="ics">Hz</div></div>
+          <div class="ic"><div class="icl">Tuning</div><div class="icv" id="di3" style="font-size:16px">—</div></div>
+        </div>
+        <div class="pnh">Keyboard — your note lights up</div>
+        <div style="display:flex;gap:1px;overflow-x:auto;padding-bottom:4px">${kh}</div>
+      </div>
+      <div class="pnl">
+        <div class="pnh">Note history (last 12)</div>
+        <div id="nhist" style="display:flex;flex-wrap:wrap;gap:4px;min-height:34px"><span style="font-size:13px;color:var(--t3);font-weight:500">Notes you sing will appear here…</span></div>
+      </div>
+      <div class="pnl">
+        <div class="pnh">What am I hearing?</div>
+        <div id="expnl" style="font-size:13px;color:var(--t2);line-height:1.7;font-weight:500">Start listening and sing a note — you'll see a fun fact about it here!</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── INIT ── */
+function initAV(){const el=document.getElementById('avrow');if(!el)return;el.innerHTML='';AVS.forEach((av,i)=>{const d=document.createElement('div');d.className='avopt'+(i===0?' sel':'');d.dataset.av=av;d.textContent=av;d.onclick=()=>{document.querySelectorAll('.avopt').forEach(x=>x.classList.remove('sel'));d.classList.add('sel');};el.appendChild(d);});}
+ldb();initAV();if(lses())launch();
+</script>
+</body>
+</html>
